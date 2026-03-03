@@ -7,11 +7,12 @@
     display: inline-flex; align-items: center; justify-content: center;
     border-radius: 9999px; padding: 2px; flex-shrink: 0;
   }
-  .badge-verify {
-    background: #3b82f6;
-    display: inline-flex; align-items: center; justify-content: center;
-    border-radius: 9999px; padding: 2px; flex-shrink: 0;
-  }
+  /* Colores Dinámicos de Verificación */
+  .v-blue { background: #3b82f6; }
+  .v-gold { background: #facc15; }
+  .v-green { background: #10b981; }
+  .v-purple { background: #a855f7; }
+
   @keyframes shine-vip { 0% {background-position: 0% 50%} 100% {background-position: 200% 50%} }
   .zen-logo { background: linear-gradient(135deg, #6366f1, #4f46e5, #4338ca); }
   .admin-panel-neon { background: rgba(2, 6, 23, 0.98); border: 1px solid #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
@@ -28,73 +29,73 @@
         <button onclick="location.reload()" class="mt-8 text-white/50 underline text-sm">Volver</button>
     </div>
 
+    <div id="note-modal" class="hidden fixed inset-0 z-[1000] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl scale-in">
+            <h2 class="text-2xl font-black text-slate-800 mb-2 italic">Crear Recordatorio</h2>
+            <textarea id="note-text" placeholder="Escribe aquí tu nota..." class="w-full h-32 p-4 bg-slate-100 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none text-slate-800 font-bold resize-none mb-6"></textarea>
+            <div class="flex gap-3">
+                <button onclick="closeNote()" class="flex-1 py-4 bg-slate-200 text-slate-600 rounded-2xl font-black uppercase text-xs">Cancelar</button>
+                <button onclick="saveNote()" class="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs">Guardar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="register-screen" class="h-screen flex flex-col items-center justify-center bg-black/50 p-6">
-      <div class="bg-white/5 backdrop-blur-3xl p-10 rounded-[3.5rem] w-[450px] border border-white/10 text-center flex flex-col gap-6 mb-6">
+      <div class="bg-white/5 backdrop-blur-3xl p-10 rounded-[3.5rem] w-[450px] border border-white/10 text-center flex flex-col gap-6">
         <div class="flex items-center justify-center gap-3">
             <div class="w-12 h-12 rounded-3xl zen-logo flex items-center justify-center rotate-[-10deg] shadow-lg"><span class="text-3xl font-black text-white italic">Z</span></div>
             <h1 class="text-4xl font-black text-white italic tracking-tighter">ZenMail</h1>
         </div>
-        <div class="relative w-24 h-24 mx-auto">
-            <img id="preview-reg" src="https://ui-avatars.com/api/?name=User&background=334155&color=fff" class="w-full h-full rounded-full object-cover border-4 border-white/10">
-            <input type="file" id="reg-photo" class="hidden" onchange="previewImage(this)">
-            <label for="reg-photo" class="absolute bottom-0 right-0 bg-indigo-600 p-2 rounded-full cursor-pointer shadow-lg hover:scale-110 transition-transform">📸</label>
-        </div>
-        <div class="space-y-4">
-          <input type="text" id="reg-user" placeholder="Solo letras, . y @" class="w-full p-4 bg-white/5 rounded-2xl outline-none border border-white/10 text-center font-bold text-white focus:border-blue-500">
-          <input type="password" id="reg-pass" placeholder="Contraseña" class="w-full p-4 bg-white/5 rounded-2xl border border-white/10 outline-none text-center font-bold text-white focus:border-blue-500">
-          <button onclick="handleAuth()" class="w-full bg-indigo-600 py-4 rounded-2xl font-bold hover:bg-indigo-500 transition-all text-lg uppercase shadow-xl">Entrar</button>
-        </div>
+        <input type="text" id="reg-user" placeholder="Usuario" class="w-full p-4 bg-white/5 rounded-2xl outline-none border border-white/10 text-center font-bold text-white focus:border-blue-500">
+        <input type="password" id="reg-pass" placeholder="Contraseña" class="w-full p-4 bg-white/5 rounded-2xl border border-white/10 outline-none text-center font-bold text-white focus:border-blue-500">
+        <button onclick="handleAuth()" class="w-full bg-indigo-600 py-4 rounded-2xl font-bold hover:bg-indigo-500 text-lg uppercase">Entrar</button>
       </div>
     </div>
 
     <div id="main-screen" class="hidden h-screen flex bg-white text-slate-900">
       <aside class="w-72 border-r p-6 flex flex-col justify-between bg-slate-50">
-        <div class="flex flex-col gap-8">
-          <div class="flex items-center gap-3 cursor-pointer group" onclick="checkAdmin()">
+        <div class="flex flex-col gap-4">
+          <div class="flex items-center gap-3 cursor-pointer mb-4" onclick="checkAdmin()">
             <div class="w-10 h-10 rounded-2xl zen-logo flex items-center justify-center text-white font-black italic shadow-lg">Z</div>
             <h2 class="text-xl font-black tracking-tighter">ZenMail</h2>
           </div>
-          <div class="p-4 bg-indigo-600 text-white shadow-xl rounded-[2rem] font-bold">📥 Bandeja</div>
+          <button onclick="loadMessages()" class="w-full p-4 bg-indigo-600 text-white rounded-[2rem] font-bold text-left flex gap-3 italic">📥 Bandeja</button>
+          <button onclick="openNote()" class="w-full p-4 bg-white border text-slate-600 rounded-[2rem] font-bold text-left flex gap-3 hover:bg-indigo-50 italic">📝 Notas</button>
         </div>
-        <div class="flex flex-col gap-3">
-            <div class="p-5 bg-white rounded-[3rem] border border-slate-200 shadow-inner text-center">
-                <img id="user-img-final" src="" class="w-16 h-16 mx-auto mb-3 rounded-full border-2 border-slate-100 object-cover">
-                <div class="flex items-center justify-center gap-1">
-                    <span id="user-display" class="font-bold text-[11px] truncate text-slate-700"></span>
-                    <div id="v-badge" class="hidden badge-vip"><svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div>
-                    <div id="check-badge" class="hidden badge-verify"><svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div>
-                </div>
+        <div class="p-5 bg-white rounded-[3rem] border shadow-inner text-center">
+            <img id="user-img-final" class="w-16 h-16 mx-auto mb-3 rounded-full border-2 object-cover">
+            <div class="flex items-center justify-center gap-1">
+                <span id="user-display" class="font-bold text-[11px] truncate text-slate-700"></span>
+                <div id="v-badge" class="hidden badge-vip"><svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div>
+                <div id="check-badge" class="hidden flex items-center justify-center rounded-full p-0.5"><svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div>
             </div>
-            <button onclick="logoutNow()" class="w-full py-3 bg-red-100 text-red-600 rounded-2xl text-[10px] font-black uppercase hover:bg-red-600 hover:text-white transition-all">Cerrar Sesión</button>
         </div>
       </aside>
 
-      <main class="flex-1 flex flex-col relative">
+      <main class="flex-1 flex flex-col">
         <header class="p-6 border-b bg-white flex justify-between items-center">
-            <div class="relative w-1/2 text-slate-800">
-                <input type="text" id="search-input" onkeyup="searchEngine()" placeholder="Buscar usuario..." class="w-full p-3 bg-slate-100 rounded-2xl outline-none text-sm font-bold border-2 border-transparent focus:border-indigo-400">
-                <div id="results-box" class="absolute top-full left-0 w-full bg-white shadow-2xl rounded-3xl mt-2 hidden z-[100] border border-slate-100 overflow-hidden"></div>
+            <div class="relative w-1/2">
+                <input type="text" id="search-input" onkeyup="searchEngine()" placeholder="Buscar ZenMail..." class="w-full p-3 bg-slate-100 rounded-2xl outline-none text-sm font-bold border-2 border-transparent focus:border-indigo-400">
+                <div id="results-box" class="absolute top-full left-0 w-full bg-white shadow-2xl rounded-3xl mt-2 hidden z-[100] border overflow-hidden"></div>
             </div>
         </header>
         <div id="email-list" class="flex-1 p-8 overflow-y-auto space-y-4 bg-slate-50/50"></div>
-        <div id="maintenance-view" class="hidden absolute inset-0 z-50 maintenance-overlay flex flex-col items-center justify-center text-center">
-            <img src="https://cdn-icons-png.flaticon.com/512/564/564619.png" class="w-24 mb-4">
-            <h2 class="text-3xl font-black text-slate-800 uppercase">En Mantenimiento</h2>
+        <div id="maintenance-view" class="hidden absolute inset-0 z-50 maintenance-overlay flex flex-col items-center justify-center">
+            <h2 class="text-3xl font-black text-slate-800 uppercase">Mantenimiento</h2>
         </div>
       </main>
     </div>
 
-    <div id="admin-panel" class="hidden fixed inset-0 bg-black/90 backdrop-blur-lg z-[500] flex items-center justify-center p-4">
-      <div class="admin-panel-neon rounded-[3rem] w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden shadow-[0_0_50px_rgba(59,130,246,0.3)]">
-        <div class="p-6 bg-slate-900/50 border-b border-blue-900/50 flex justify-between items-center text-white">
-          <h2 class="text-2xl font-black text-blue-400 uppercase italic">ZenMail Security Dashboard</h2>
-          <div class="flex gap-2">
-            <button onclick="clearMessages()" class="bg-yellow-600 text-white px-4 py-2 rounded-xl text-[10px] font-bold uppercase">🗑️ Limpiar DB</button>
-            <button id="btn-panic" onclick="toggleMaintenance()" class="bg-orange-600 text-white px-4 py-2 rounded-xl text-[10px] font-bold uppercase">Mantenimiento: OFF</button>
-            <button onclick="closeAdmin()" class="bg-red-600 px-6 py-2 rounded-xl text-[10px] font-bold uppercase">Cerrar</button>
+    <div id="admin-panel" class="hidden fixed inset-0 bg-black/95 backdrop-blur-xl z-[500] flex items-center justify-center p-4">
+      <div class="admin-panel-neon rounded-[3rem] w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+        <div class="p-6 bg-slate-900 flex justify-between items-center border-b border-blue-900">
+          <h2 class="text-xl font-black text-blue-400 italic">ZEN-SECURITY COMMAND CENTER</h2>
+          <div class="flex gap-3">
+            <input type="text" id="admin-search" onkeyup="updateAdminList()" placeholder="Filtrar por nombre o estado..." class="bg-black/50 border border-blue-900 rounded-xl px-4 py-1 text-xs outline-none w-64">
+            <button onclick="closeAdmin()" class="bg-red-600 px-6 py-2 rounded-xl text-[10px] font-bold uppercase">Salir</button>
           </div>
         </div>
-        <div id="admin-db-list" class="flex-1 p-6 overflow-y-auto space-y-2 bg-slate-950/40"></div>
+        <div id="admin-db-list" class="flex-1 p-6 overflow-y-auto space-y-3 bg-slate-950/50"></div>
       </div>
     </div>
   </div>
@@ -103,8 +104,7 @@
     const MASTER_SECURITY_KEY = "ZM_X99_ROOT_#SECURITY_2026";
     let isUnderMaintenance = JSON.parse(localStorage.getItem('zen_maintenance')) || false;
     let usersDB = JSON.parse(localStorage.getItem('zen_users')) || [
-      { email: "ZenMail@ZenMail.com", pass: "SYS_Zen_&99*Alpha", isVip: true, isVerified: true, isBanned: false, banReason: "", photo: "https://ui-avatars.com/api/?name=Z&background=4f46e5&color=fff" },
-      { email: "admin@zenmail.com", pass: "ZM_admin_#2026!X", isVip: true, isVerified: true, isBanned: false, banReason: "", photo: "https://ui-avatars.com/api/?name=A&background=ef4444&color=fff" }
+      { email: "ZenMail@ZenMail.com", pass: "SYS_Zen_&99*Alpha", isVip: true, isVerified: true, vColor: "v-blue", isBanned: false, photo: "https://ui-avatars.com/api/?name=Z&background=4f46e5&color=fff" }
     ];
     let messagesDB = JSON.parse(localStorage.getItem('zen_messages')) || [];
     let currentUser = null;
@@ -115,19 +115,9 @@
       localStorage.setItem('zen_maintenance', JSON.stringify(isUnderMaintenance));
     }
 
-    function previewImage(input) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = e => document.getElementById('preview-reg').src = e.target.result;
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-
     function handleAuth() {
       const user = document.getElementById('reg-user').value.trim();
       const pass = document.getElementById('reg-pass').value.trim();
-      const regex = /^[a-zA-Z.@]+$/;
-      if(!regex.test(user)) return alert("Usuario no válido.");
       const email = user.includes('@') ? user : user + "@zenmail.com";
       let found = usersDB.find(u => u.email.toLowerCase() === email.toLowerCase());
       if(found) {
@@ -135,7 +125,7 @@
         if(found.pass !== pass) return alert("Error.");
         currentUser = found;
       } else {
-        currentUser = { email, pass, isVip: false, isVerified: false, isBanned: false, banReason: "", photo: document.getElementById('preview-reg').src };
+        currentUser = { email, pass, isVip: false, isVerified: false, vColor: "v-blue", isBanned: false, photo: `https://ui-avatars.com/api/?name=${user}` };
         usersDB.push(currentUser);
         save();
       }
@@ -146,144 +136,113 @@
       document.getElementById('user-display').innerText = currentUser.email;
       document.getElementById('user-img-final').src = currentUser.photo;
       document.getElementById('v-badge').classList.toggle('hidden', !currentUser.isVip);
-      document.getElementById('check-badge').classList.toggle('hidden', !currentUser.isVerified);
+      const cb = document.getElementById('check-badge');
+      cb.classList.toggle('hidden', !currentUser.isVerified);
+      cb.className = `hidden flex items-center justify-center rounded-full p-0.5 ${currentUser.vColor || 'v-blue'}`;
       document.getElementById('register-screen').classList.add('hidden');
       document.getElementById('main-screen').classList.remove('hidden');
-      checkMaintenanceUI();
       loadMessages();
     }
 
-    function checkMaintenanceUI() {
-        const view = document.getElementById('maintenance-view');
-        const isAdmin = (currentUser.email === "admin@zenmail.com" || currentUser.email === "ZenMail@ZenMail.com");
-        view.classList.toggle('hidden', !isUnderMaintenance || isAdmin);
+    function updateAdminList() {
+      const q = document.getElementById('admin-search').value.toLowerCase();
+      document.getElementById('admin-db-list').innerHTML = usersDB
+      .filter(u => u.email.toLowerCase().includes(q))
+      .map(u => `
+        <div class="p-4 bg-slate-900 border border-blue-900/30 rounded-2xl flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <img src="${u.photo}" class="w-12 h-12 rounded-full border border-blue-500">
+            <div>
+                <p class="text-white font-bold text-sm">${u.email}</p>
+                <div class="flex gap-2 mt-1">
+                    <button onclick="toggleVerify('${u.email}')" class="p-1 px-2 rounded-md text-[9px] ${u.isVerified ? u.vColor : 'bg-gray-700'} font-bold">VERIFICADO</button>
+                    <select onchange="changeVColor('${u.email}', this.value)" class="bg-black text-[9px] border border-blue-900 rounded">
+                        <option value="v-blue" ${u.vColor==='v-blue'?'selected':''}>Azul</option>
+                        <option value="v-gold" ${u.vColor==='v-gold'?'selected':''}>Dorado</option>
+                        <option value="v-green" ${u.vColor==='v-green'?'selected':''}>Esmeralda</option>
+                        <option value="v-purple" ${u.vColor==='v-purple'?'selected':''}>Violeta</option>
+                    </select>
+                </div>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="spyMessages('${u.email}')" class="bg-indigo-600 px-3 py-1 rounded-lg text-[9px] font-bold uppercase">Ver Mensajes 👁️</button>
+            <button onclick="unbanUser('${u.email}')" class="bg-green-600 px-3 py-1 rounded-lg text-[9px] font-bold uppercase">Desbanear</button>
+            <button onclick="showCriticalNotice('${u.email}')" class="bg-red-600 px-3 py-1 rounded-lg text-[9px] font-bold uppercase">Banear</button>
+          </div>
+        </div>`).join('');
     }
 
-    function toggleMaintenance() {
-        isUnderMaintenance = !isUnderMaintenance;
+    function spyMessages(email) {
+        const msgs = messagesDB.filter(m => m.from.toLowerCase() === email.toLowerCase());
+        if(msgs.length === 0) return alert("Este usuario no ha escrito nada todavía.");
+        const log = msgs.map(m => `PARA: ${m.to}\nMSJ: ${m.text}`).join('\n\n------------------\n\n');
+        alert(`LOGS DE MENSAJES ENVIADOS POR: ${email}\n\n${log}`);
+    }
+
+    function changeVColor(email, color) {
+        let u = usersDB.find(u => u.email === email);
+        u.vColor = color;
         save();
-        updatePanicBtn();
-        checkMaintenanceUI();
+        updateAdminList();
+        if(currentUser.email === email) enterApp();
     }
 
-    function updatePanicBtn() {
-        const btn = document.getElementById('btn-panic');
-        btn.innerText = isUnderMaintenance ? "Mantenimiento: ON" : "Mantenimiento: OFF";
-        btn.className = `px-4 py-2 rounded-xl text-[10px] font-bold uppercase ${isUnderMaintenance ? 'bg-green-600' : 'bg-orange-600'}`;
+    function toggleVerify(email) {
+        let u = usersDB.find(u => u.email === email);
+        u.isVerified = !u.isVerified;
+        save(); updateAdminList();
+        if(currentUser.email === email) enterApp();
     }
 
-    function clearMessages() {
-        if(confirm("¿Borrar todos los mensajes?")) { messagesDB = []; save(); loadMessages(); }
+    function checkAdmin() {
+      if(prompt("ROOT PASSWORD:") === MASTER_SECURITY_KEY) {
+        updateAdminList();
+        document.getElementById('admin-panel').classList.remove('hidden');
+      }
+    }
+
+    function loadMessages() {
+      const list = document.getElementById('email-list');
+      const my = messagesDB.filter(m => m.to.toLowerCase() === currentUser.email.toLowerCase());
+      list.innerHTML = my.length === 0 ? '<div class="text-center text-slate-300 font-bold py-20">SIN MENSAJES</div>' :
+        my.reverse().map(m => `<div class="p-6 bg-white rounded-[2rem] border shadow-sm"><b class="text-indigo-600 text-[10px]">De: ${m.from}</b><p class="text-slate-700 mt-2">${m.text}</p></div>`).join('');
     }
 
     function searchEngine() {
       const q = document.getElementById('search-input').value.toLowerCase();
       const box = document.getElementById('results-box');
       if(q.length < 1) { box.classList.add('hidden'); return; }
-      const matches = usersDB.filter(u => u.email.toLowerCase().includes(q) && u.email !== currentUser.email);
+      const matches = usersDB.filter(u => u.email.toLowerCase().includes(q));
       box.classList.remove('hidden');
       box.innerHTML = matches.map(u => `
-        <div onclick="openChat('${u.email}')" class="p-4 hover:bg-indigo-50 cursor-pointer flex items-center justify-between border-b">
-          <div class="flex items-center gap-3">
-            <img src="${u.photo}" class="w-8 h-8 rounded-full border">
-            <span class="text-xs font-bold text-slate-700">${u.email}</span>
-          </div>
-          <div class="flex gap-1">
-            ${u.isVip ? '<div class="badge-vip w-4 h-4"><svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div>' : ''}
-            ${u.isVerified ? '<div class="badge-verify w-4 h-4"><svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div>' : ''}
-          </div>
+        <div onclick="openChat('${u.email}')" class="p-4 hover:bg-slate-50 cursor-pointer flex items-center justify-between border-b">
+          <span class="text-xs font-bold text-slate-700">${u.email}</span>
+          ${u.isVerified ? `<div class="${u.vColor} p-1 rounded-full"><svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div>` : ''}
         </div>`).join('');
     }
 
     function openChat(to) {
-      const txt = prompt(`Correo para ${to}:`);
-      if(txt) { messagesDB.push({ from: currentUser.email, to: to, text: txt }); save(); alert("Enviado."); }
+      const txt = prompt(`Escribir a ${to}:`);
+      if(txt) { messagesDB.push({ from: currentUser.email, to: to, text: txt }); save(); alert("Mensaje Enviado"); }
       document.getElementById('results-box').classList.add('hidden');
     }
 
-    function loadMessages() {
-      const list = document.getElementById('email-list');
-      const my = messagesDB.filter(m => m.to.toLowerCase() === currentUser.email.toLowerCase());
-      list.innerHTML = my.length === 0 ? '<div class="h-full flex items-center justify-center text-slate-300 font-bold uppercase text-xs italic">Vacío</div>' :
-        my.reverse().map(m => `<div class="p-6 bg-white rounded-[2rem] border shadow-sm"><b class="text-indigo-600 text-[10px]">De: ${m.from}</b><p class="text-slate-700 mt-2">${m.text}</p></div>`).join('');
+    function openNote() { document.getElementById('note-modal').classList.remove('hidden'); }
+    function closeNote() { document.getElementById('note-modal').classList.add('hidden'); }
+    function saveNote() {
+        const text = document.getElementById('note-text').value.trim();
+        if(!text) return;
+        messagesDB.push({ from: "MI NOTA 📝", to: currentUser.email, text: text });
+        save(); loadMessages(); closeNote();
     }
-
-    function checkAdmin() {
-      if(prompt("ROOT PASSWORD:") === MASTER_SECURITY_KEY) {
-        updateAdminList();
-        updatePanicBtn();
-        document.getElementById('admin-panel').classList.remove('hidden');
-      }
+    function unbanUser(email) { 
+        let u = usersDB.find(u => u.email === email); u.isBanned = false; save(); updateAdminList(); 
     }
-
-    function updateAdminList() {
-      document.getElementById('admin-db-list').innerHTML = usersDB.map(u => `
-        <div class="flex items-center justify-between p-4 bg-slate-900/80 rounded-2xl border border-blue-900/30">
-          <div class="flex items-center gap-4">
-            <img src="${u.photo}" class="w-10 h-10 rounded-full border border-blue-500/50 ${u.isBanned ? 'grayscale' : ''}">
-            <div>
-                <p class="text-white text-xs font-bold">${u.email} ${u.isBanned ? '<span class="text-red-500 text-[8px]">[BANEADO]</span>' : ''}</p>
-                <p class="text-[10px] text-blue-400 font-mono">${u.pass}</p>
-            </div>
-          </div>
-          <div class="flex gap-2">
-            <button onclick="toggleVip('${u.email}')" class="px-3 py-1 bg-blue-900/50 text-blue-400 rounded-lg text-[9px] font-black hover:bg-blue-600">VIP ⭐</button>
-            <button onclick="toggleVerify('${u.email}')" class="px-3 py-1 bg-blue-500 text-white rounded-lg text-[9px] font-black hover:bg-blue-400">VERIFICAR ✔</button>
-            ${u.isBanned 
-                ? `<button onclick="unbanUser('${u.email}')" class="px-3 py-1 bg-green-600 text-white rounded-lg text-[9px] font-black hover:bg-green-500">DESBANEAR 🔓</button>`
-                : `<button onclick="showCriticalNotice('${u.email}')" class="px-3 py-1 bg-red-600 text-white rounded-lg text-[9px] font-black hover:bg-red-500">GESTIÓN ⚠</button>`
-            }
-          </div>
-        </div>`).join('');
-    }
-
-    function toggleVerify(e) {
-        let u = usersDB.find(u => u.email === e);
-        u.isVerified = !u.isVerified;
-        save(); updateAdminList();
-        if(currentUser && currentUser.email === e) {
-            document.getElementById('check-badge').classList.toggle('hidden', !u.isVerified);
-        }
-    }
-
-    function unbanUser(email) {
-        let u = usersDB.find(u => u.email === email);
-        u.isBanned = false;
-        u.banReason = "";
-        alert(`Usuario ${email} ha sido desbaneado.`);
-        save(); updateAdminList();
-    }
-
     function showCriticalNotice(email) {
-        if(email === "admin@zenmail.com" || email === "ZenMail@ZenMail.com") return alert("Protegido.");
-        const action = prompt(`GESTIÓN: ${email}\nEscribe "BANEAR" o "ELIMINAR"`);
-        if(!action) return;
-        if(action.toUpperCase() === "BANEAR") {
-            let u = usersDB.find(u => u.email === email);
-            u.isBanned = true;
-            u.banReason = prompt("Razón del baneo:") || "Baneo de sistema.";
-            alert("Usuario baneado.");
-        } else if(action.toUpperCase() === "ELIMINAR") {
-            if(confirm("¿Eliminar para siempre?")) usersDB = usersDB.filter(u => u.email !== email);
-        }
-        save(); updateAdminList();
+        let u = usersDB.find(u => u.email === email); u.isBanned = true; u.banReason = "Baneo por Admin"; save(); updateAdminList();
     }
-
-    function toggleVip(e) {
-      let u = usersDB.find(u => u.email === e);
-      u.isVip = !u.isVip;
-      save(); updateAdminList();
-      if(currentUser && currentUser.email === e) {
-          document.getElementById('v-badge').classList.toggle('hidden', !u.isVip);
-      }
-    }
-
-    function logoutNow() { currentUser = null; location.reload(); }
     function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
-    function showBanView(reason) {
-      document.getElementById('ban-reason-text').innerText = `"${reason || 'Acceso restringido.'}"`;
-      document.getElementById('ban-view').classList.remove('hidden');
-      document.getElementById('register-screen').classList.add('hidden');
-    }
+    function logoutNow() { currentUser = null; location.reload(); }
   </script>
 </body>
