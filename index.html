@@ -220,16 +220,19 @@
       document.getElementById('admin-db-list').innerHTML = usersDB.map(u => `
         <div class="flex items-center justify-between p-4 bg-slate-900/80 rounded-2xl border border-blue-900/30">
           <div class="flex items-center gap-4">
-            <img src="${u.photo}" class="w-10 h-10 rounded-full border border-blue-500/50">
+            <img src="${u.photo}" class="w-10 h-10 rounded-full border border-blue-500/50 ${u.isBanned ? 'grayscale' : ''}">
             <div>
-                <p class="text-white text-xs font-bold">${u.email}</p>
+                <p class="text-white text-xs font-bold">${u.email} ${u.isBanned ? '<span class="text-red-500 text-[8px]">[BANEADO]</span>' : ''}</p>
                 <p class="text-[10px] text-blue-400 font-mono">${u.pass}</p>
             </div>
           </div>
           <div class="flex gap-2">
             <button onclick="toggleVip('${u.email}')" class="px-3 py-1 bg-blue-900/50 text-blue-400 rounded-lg text-[9px] font-black hover:bg-blue-600">VIP ⭐</button>
             <button onclick="toggleVerify('${u.email}')" class="px-3 py-1 bg-blue-500 text-white rounded-lg text-[9px] font-black hover:bg-blue-400">VERIFICAR ✔</button>
-            <button onclick="showCriticalNotice('${u.email}')" class="px-3 py-1 bg-red-600 text-white rounded-lg text-[9px] font-black hover:bg-red-500">⚠ GESTIÓN</button>
+            ${u.isBanned 
+                ? `<button onclick="unbanUser('${u.email}')" class="px-3 py-1 bg-green-600 text-white rounded-lg text-[9px] font-black hover:bg-green-500">DESBANEAR 🔓</button>`
+                : `<button onclick="showCriticalNotice('${u.email}')" class="px-3 py-1 bg-red-600 text-white rounded-lg text-[9px] font-black hover:bg-red-500">GESTIÓN ⚠</button>`
+            }
           </div>
         </div>`).join('');
     }
@@ -243,15 +246,23 @@
         }
     }
 
+    function unbanUser(email) {
+        let u = usersDB.find(u => u.email === email);
+        u.isBanned = false;
+        u.banReason = "";
+        alert(`Usuario ${email} ha sido desbaneado.`);
+        save(); updateAdminList();
+    }
+
     function showCriticalNotice(email) {
         if(email === "admin@zenmail.com" || email === "ZenMail@ZenMail.com") return alert("Protegido.");
         const action = prompt(`GESTIÓN: ${email}\nEscribe "BANEAR" o "ELIMINAR"`);
         if(!action) return;
         if(action.toUpperCase() === "BANEAR") {
             let u = usersDB.find(u => u.email === email);
-            u.isBanned = !u.isBanned;
-            if(u.isBanned) u.banReason = prompt("Razón del baneo:") || "Baneo de sistema.";
-            alert("Acción realizada.");
+            u.isBanned = true;
+            u.banReason = prompt("Razón del baneo:") || "Baneo de sistema.";
+            alert("Usuario baneado.");
         } else if(action.toUpperCase() === "ELIMINAR") {
             if(confirm("¿Eliminar para siempre?")) usersDB = usersDB.filter(u => u.email !== email);
         }
