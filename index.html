@@ -12,6 +12,7 @@
   .v-gold { background: #facc15; }
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
+  .note-bg { background: #2a3942; border-left: 4px solid #facc15; }
 </style>
 
 <body class="bg-[#111b21] font-sans text-slate-200 overflow-hidden">
@@ -19,15 +20,15 @@
 
     <div id="login-screen" class="h-screen flex flex-col items-center justify-center bg-[#111b21]">
       <div class="text-center mb-10">
-          <div class="w-32 h-32 bg-transparent rounded-full flex items-center justify-center mx-auto mb-4">
-              <img src="tu-logo.png" id="main-logo" class="w-full h-full object-contain" alt="Logo">
+          <div class="w-24 h-24 bg-[#00a884] rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-[0_0_40px_rgba(0,168,132,0.3)] transform -rotate-12">
+              <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
           </div>
-          <h1 class="text-4xl font-black text-white tracking-widest uppercase italic">ZenApp</h1>
+          <h1 class="text-4xl font-black text-white tracking-widest uppercase italic">ZenMail</h1>
       </div>
       <div class="bg-[#222e35] p-8 rounded-2xl w-[380px] shadow-2xl border-t-4 border-[#00a884]">
-        <input type="text" id="login-user" placeholder="Tu nombre" class="w-full p-4 bg-[#2a3942] rounded-xl outline-none mb-4 text-white border border-transparent focus:border-[#00a884]">
-        <input type="password" id="login-pass" placeholder="Contraseña" class="w-full p-4 bg-[#2a3942] rounded-xl outline-none mb-6 text-white border border-transparent focus:border-[#00a884]">
-        <button onclick="auth()" class="w-full bg-[#00a884] py-4 rounded-xl font-black text-[#111b21] hover:bg-[#06cf9c] uppercase tracking-widest">Entrar / Unirse</button>
+        <input type="text" id="login-user" placeholder="Tu nombre" class="w-full p-4 bg-[#2a3942] rounded-xl outline-none mb-4 text-white">
+        <input type="password" id="login-pass" placeholder="Contraseña" class="w-full p-4 bg-[#2a3942] rounded-xl outline-none mb-6 text-white">
+        <button onclick="auth()" class="w-full bg-[#00a884] py-4 rounded-xl font-black text-[#111b21] hover:bg-[#06cf9c] uppercase tracking-widest">Entrar</button>
       </div>
     </div>
 
@@ -41,15 +42,25 @@
                     <p id="my-id-display" onclick="copyMyID()" class="text-[10px] text-[#00a884] font-black cursor-pointer hover:underline"></p>
                 </div>
             </div>
-            <button onclick="logout()" class="text-slate-400 hover:text-white">❌</button>
+            <div class="flex gap-3">
+                <button onclick="openNotes()" title="Mis Notas" class="text-yellow-500 text-xl">📝</button>
+                <button onclick="logout()" class="text-slate-400">❌</button>
+            </div>
         </header>
 
-        <div class="p-4">
-            <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-widest">Buscar por ID</label>
-            <div class="flex gap-2">
-                <input type="text" id="id-search-input" placeholder="Ej: ZEN-1234" class="flex-1 p-2.5 bg-[#202c33] rounded-lg text-xs outline-none text-white border border-transparent focus:border-[#00a884]">
-                <button onclick="searchByID()" class="bg-[#00a884] px-4 rounded-lg text-xs font-bold text-[#111b21]">BUSCAR</button>
+        <div class="p-4 space-y-3">
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-widest">Buscador de ID</label>
+                <div class="flex gap-2">
+                    <input type="text" id="id-search-input" placeholder="ZEN-1234" class="flex-1 p-2.5 bg-[#202c33] rounded-lg text-xs outline-none text-white border border-white/10 focus:border-[#00a884]">
+                    <button onclick="searchByID()" class="bg-[#00a884] px-4 rounded-lg text-xs font-bold text-[#111b21]">BUSCAR</button>
+                </div>
             </div>
+            
+            <button onclick="contactAdmin()" class="w-full bg-[#3b82f6]/20 border border-[#3b82f6] text-[#3b82f6] py-2 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-[#3b82f6] hover:text-white transition-all">
+                📞 Contactar Admin (ID: 123-abc)
+            </button>
+
             <div id="id-result-container" class="mt-4"></div>
         </div>
 
@@ -57,29 +68,53 @@
       </aside>
 
       <main class="flex-1 flex flex-col chat-wallpaper">
-        <header id="chat-header" class="hidden p-4 bg-[#202c33] flex items-center gap-4 border-l border-white/5 shadow-lg">
-            <div id="target-avatar" class="w-10 h-10 rounded-full"></div>
-            <div class="flex flex-col">
-                <div class="flex items-center gap-2">
+        <header id="chat-header" class="hidden p-4 bg-[#202c33] flex items-center justify-between border-l border-white/5 shadow-lg">
+            <div class="flex items-center gap-4">
+                <div id="target-avatar" class="w-10 h-10 rounded-full"></div>
+                <div class="flex flex-col">
                     <span id="target-name" class="font-bold text-white text-sm"></span>
-                    <div id="target-verify" class="hidden p-0.5 rounded-full"><svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div>
+                    <span id="target-id-label" class="text-[9px] text-slate-400 font-bold uppercase tracking-widest"></span>
                 </div>
-                <span id="target-id-label" class="text-[9px] text-slate-400 font-bold uppercase tracking-widest"></span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="startCall()" title="Llamada de voz" class="text-[#00a884]">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"></path></svg>
+                </button>
+                <button onclick="clearChat()" class="text-red-500 text-[10px] font-black border border-red-500 px-2 py-1 rounded hover:bg-red-500 hover:text-white">BORRAR CHAT</button>
             </div>
         </header>
         <div id="messages-flow" class="flex-1 p-8 overflow-y-auto flex flex-col gap-4"></div>
         <div id="chat-input-bar" class="hidden p-4 bg-[#202c33] flex items-center gap-4 border-l border-white/5">
-            <input type="text" id="msg-input" placeholder="Mensaje..." class="flex-1 p-3 bg-[#2a3942] rounded-xl outline-none text-white text-sm">
-            <button onclick="send()" class="text-[#00a884] font-black px-4 hover:scale-105 transition-transform">ENVIAR</button>
+            <input type="text" id="msg-input" placeholder="Escribe un mensaje..." class="flex-1 p-3 bg-[#2a3942] rounded-xl outline-none text-white text-sm">
+            <button onclick="send()" class="text-[#00a884] font-black px-4">ENVIAR</button>
         </div>
       </main>
     </div>
 
-    <div id="admin-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-[1000] flex items-center justify-center p-6">
+    <div id="call-modal" class="hidden fixed inset-0 bg-[#0b141a]/95 z-[2000] flex flex-col items-center justify-center">
+        <div class="w-32 h-32 rounded-full border-4 border-[#00a884] p-1 mb-6 animate-pulse">
+            <img id="call-avatar" src="" class="w-full h-full rounded-full object-cover">
+        </div>
+        <h2 id="call-name" class="text-2xl font-bold text-white mb-2"></h2>
+        <p class="text-[#00a884] font-black animate-pulse">LLAMANDO...</p>
+        <button onclick="endCall()" class="mt-10 bg-red-600 p-5 rounded-full text-white">✖ Terminar</button>
+    </div>
+
+    <div id="notes-modal" class="hidden fixed inset-0 bg-black/80 z-[1000] flex items-center justify-center">
+        <div class="bg-[#222e35] w-[400px] p-6 rounded-2xl border border-yellow-500/30">
+            <h3 class="text-yellow-500 font-bold mb-4 uppercase">Notas</h3>
+            <textarea id="note-input" class="w-full h-32 bg-[#111b21] p-3 rounded-lg text-sm mb-3 outline-none"></textarea>
+            <button onclick="saveNote()" class="bg-yellow-500 text-black px-4 py-2 rounded font-bold text-xs">GUARDAR</button>
+            <button onclick="closeNotes()" class="text-white text-xs ml-4">CERRAR</button>
+            <div id="notes-list" class="mt-4 max-h-40 overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="hidden fixed inset-0 bg-black/90 z-[1000] flex items-center justify-center p-6">
       <div class="bg-[#111b21] border border-[#00a884]/30 rounded-3xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
         <header class="p-5 bg-[#202c33] flex justify-between items-center">
-          <h2 class="font-black text-[#00a884] uppercase tracking-widest italic text-lg">Control Maestro</h2>
-          <button onclick="closeAdmin()" class="bg-red-600 px-6 py-2 rounded-lg text-xs text-white font-bold uppercase tracking-widest">Cerrar</button>
+          <h2 class="font-black text-[#00a884] uppercase">Panel Maestro</h2>
+          <button onclick="closeAdmin()" class="bg-red-600 px-4 py-1 rounded text-xs text-white">CERRAR</button>
         </header>
         <div id="admin-list-container" class="flex-1 p-6 overflow-y-auto space-y-4"></div>
       </div>
@@ -89,16 +124,19 @@
 
   <script>
     const ADMIN_PASS = "ZM_X99_ROOT_#SECURITY_2026";
+    // El Admin principal ahora tiene el ID 123-abc
     let users = JSON.parse(localStorage.getItem('za_id_users')) || [
-        { id: "ZEN-0001", name: "Admin", pass: "123", isVerified: true, vColor: "v-gold", banned: false, photo: "https://ui-avatars.com/api/?name=A&background=00a884&color=fff" }
+        { id: "123-abc", name: "Admin ZenMail", pass: "root", isVerified: true, vColor: "v-gold", banned: false, photo: "https://ui-avatars.com/api/?name=Admin&background=00a884&color=fff" }
     ];
     let messages = JSON.parse(localStorage.getItem('za_id_messages')) || [];
+    let notes = JSON.parse(localStorage.getItem('za_notes')) || [];
     let me = null;
     let talkingTo = null;
 
     function saveDB() {
       localStorage.setItem('za_id_users', JSON.stringify(users));
       localStorage.setItem('za_id_messages', JSON.stringify(messages));
+      localStorage.setItem('za_notes', JSON.stringify(notes));
     }
 
     function auth() {
@@ -107,14 +145,14 @@
       if(!uName || !uPass) return;
       let user = users.find(x => x.name.toLowerCase() === uName.toLowerCase() && x.pass === uPass);
       if(user) {
-        if(user.banned) return alert("TU CUENTA HA SIDO BANEADA");
+        if(user.banned) return alert("BANEADO");
         me = user;
       } else {
         const newID = "ZEN-" + Math.floor(1000 + Math.random() * 9000);
         me = { id: newID, name: uName, pass: uPass, isVerified: false, vColor: "v-blue", banned: false, photo: `https://ui-avatars.com/api/?name=${uName}&background=random` };
         users.push(me);
         saveDB();
-        alert("¡Hola! Tu ID único es: " + newID);
+        alert("Tu ID es: " + newID);
       }
       startApp();
     }
@@ -128,15 +166,19 @@
       renderHistory();
     }
 
+    function contactAdmin() {
+        if(me.id === "123-abc") return alert("¡Tú eres el admin!");
+        openChat("123-abc");
+    }
+
     function searchByID() {
-        const query = document.getElementById('id-search-input').value.trim().toUpperCase();
+        const query = document.getElementById('id-search-input').value.trim();
         const found = users.find(u => u.id === query);
+        const container = document.getElementById('id-result-container');
         if(found && found.id !== me.id) {
-            document.getElementById('id-result-container').innerHTML = `
-                <div onclick="openChat('${found.id}')" class="p-3 bg-[#2a3942] rounded-xl flex items-center justify-between cursor-pointer border border-[#00a884]">
-                    <span class="text-xs font-bold text-white">${found.name} (${found.id})</span>
-                    <span class="text-[10px] bg-[#00a884] text-[#111b21] px-2 py-1 rounded font-black">CHAT</span>
-                </div>`;
+            container.innerHTML = `<div onclick="openChat('${found.id}')" class="p-3 bg-[#2a3942] rounded-xl flex items-center justify-between cursor-pointer border border-[#00a884]"><span class="text-xs font-bold text-white">${found.name} (${found.id})</span><span class="text-[10px] bg-[#00a884] text-black px-2 py-1 rounded font-black">CHAT</span></div>`;
+        } else {
+            container.innerHTML = `<p class="text-[10px] text-red-500 font-bold text-center">ID NO ENCONTRADO</p>`;
         }
     }
 
@@ -148,29 +190,30 @@
       document.getElementById('target-name').innerText = target.name;
       document.getElementById('target-id-label').innerText = target.id;
       document.getElementById('target-avatar').innerHTML = `<img src="${target.photo}" class="w-full h-full rounded-full">`;
-      const v = document.getElementById('target-verify');
-      v.classList.toggle('hidden', !target.isVerified);
-      v.className = `p-0.5 rounded-full ${target.vColor}`;
       renderMessages();
     }
 
-    function renderHistory() {
-      const list = document.getElementById('chats-list');
-      const contacts = [...new Set(messages.filter(m => m.to === me.id || m.from === me.id).map(m => m.from === me.id ? m.to : m.from))];
-      list.innerHTML = contacts.map(cid => {
-        const u = users.find(x => x.id === cid);
-        return `<div onclick="openChat('${u.id}')" class="p-4 flex items-center gap-4 hover:bg-[#202c33] cursor-pointer border-b border-white/5 transition-colors"><img src="${u.photo}" class="w-10 h-10 rounded-full"><div><p class="text-white text-sm font-bold">${u.name}</p><p class="text-[10px] text-slate-500 font-bold">${u.id}</p></div></div>`;
-      }).join('');
+    function clearChat() {
+        if(confirm("¿Borrar historial?")) {
+            messages = messages.filter(m => !((m.from === me.id && m.to === talkingTo) || (m.from === talkingTo && m.to === me.id)));
+            saveDB(); renderMessages(); renderHistory();
+        }
     }
+
+    function startCall() {
+        const target = users.find(x => x.id === talkingTo);
+        document.getElementById('call-name').innerText = target.name;
+        document.getElementById('call-avatar').src = target.photo;
+        document.getElementById('call-modal').classList.remove('hidden');
+    }
+    function endCall() { document.getElementById('call-modal').classList.add('hidden'); }
 
     function send() {
       const input = document.getElementById('msg-input');
       if(!input.value.trim() || !talkingTo) return;
       messages.push({ from: me.id, to: talkingTo, text: input.value.trim() });
       input.value = "";
-      saveDB();
-      renderMessages();
-      renderHistory();
+      saveDB(); renderMessages(); renderHistory();
     }
 
     function renderMessages() {
@@ -180,39 +223,53 @@
       flow.scrollTop = flow.scrollHeight;
     }
 
+    function renderHistory() {
+      const list = document.getElementById('chats-list');
+      const contacts = [...new Set(messages.filter(m => m.to === me.id || m.from === me.id).map(m => m.from === me.id ? m.to : m.from))];
+      list.innerHTML = contacts.map(cid => {
+        const u = users.find(x => x.id === cid);
+        if(!u) return '';
+        return `<div onclick="openChat('${u.id}')" class="p-4 flex items-center gap-4 hover:bg-[#202c33] cursor-pointer border-b border-white/5"><img src="${u.photo}" class="w-10 h-10 rounded-full"><div><p class="text-white text-sm font-bold">${u.name}</p><p class="text-[10px] text-slate-500 font-bold">${u.id}</p></div></div>`;
+      }).join('');
+    }
+
+    function openNotes() { document.getElementById('notes-modal').classList.remove('hidden'); renderNotes(); }
+    function closeNotes() { document.getElementById('notes-modal').classList.add('hidden'); }
+    function saveNote() {
+        const txt = document.getElementById('note-input').value.trim();
+        if(txt) { notes.push({ user: me.id, content: txt }); document.getElementById('note-input').value = ""; saveDB(); renderNotes(); }
+    }
+    function renderNotes() {
+        const list = document.getElementById('notes-list');
+        const myNotes = notes.filter(n => n.user === me.id);
+        list.innerHTML = myNotes.map((n, i) => `<div class="p-2 note-bg text-xs mt-2"><span>${n.content}</span></div>`).join('');
+    }
+
     function openAdminPanel() {
       if(prompt("PASSWORD MAESTRA:") === ADMIN_PASS) { renderAdminList(); document.getElementById('admin-modal').classList.remove('hidden'); }
     }
 
     function renderAdminList() {
       document.getElementById('admin-list-container').innerHTML = users.map(u => `
-        <div class="p-5 bg-[#202c33] rounded-2xl flex items-center justify-between border border-white/5 shadow-lg">
+        <div class="p-5 bg-[#202c33] rounded-2xl flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <img src="${u.photo}" class="w-12 h-12 rounded-full border border-white/10">
+                <img src="${u.photo}" class="w-12 h-12 rounded-full">
                 <div>
                     <p class="text-white text-sm font-black">${u.name} ${u.banned ? '🚫' : ''}</p>
-                    <p class="text-[#00a884] text-[10px] font-bold tracking-widest uppercase italic">ID: ${u.id}</p>
-                    <p class="text-yellow-500 text-[11px] font-mono mt-1">Clave: ${u.pass}</p>
-                    <select onchange="updateColor('${u.id}', this.value)" class="bg-black text-[9px] text-white p-1 mt-2 rounded border border-white/20">
-                        <option value="v-blue" ${u.vColor==='v-blue'?'selected':''}>Azul</option>
-                        <option value="v-gold" ${u.vColor==='v-gold'?'selected':''}>Oro</option>
-                    </select>
+                    <p class="text-[#00a884] text-[10px] font-bold">ID: ${u.id}</p>
+                    <p class="text-yellow-500 text-[11px] font-black">CLAVE: ${u.pass}</p>
                 </div>
             </div>
-            <div class="flex gap-3">
-                <button onclick="toggleVerify('${u.id}')" class="bg-blue-600 px-4 py-2 rounded-lg text-[10px] text-white font-bold uppercase">${u.isVerified ? 'Quitar Verif' : 'Verificar'}</button>
-                <button onclick="toggleBan('${u.id}')" class="bg-orange-600 px-4 py-2 rounded-lg text-[10px] text-white font-bold uppercase">${u.banned ? 'Desbanear' : 'Banear'}</button>
-                <button onclick="deleteUser('${u.id}')" class="bg-red-700 px-4 py-2 rounded-lg text-[10px] text-white font-black uppercase italic">Borrar</button>
+            <div class="flex gap-2">
+                <button onclick="toggleBan('${u.id}')" class="bg-orange-600 px-3 py-1 rounded text-[10px] text-white font-bold">BANEAR</button>
+                <button onclick="deleteUser('${u.id}')" class="bg-red-700 px-3 py-1 rounded text-[10px] text-white font-black italic">ELIMINAR</button>
             </div>
         </div>`).join('');
     }
 
-    function toggleVerify(id) { let u = users.find(x => x.id === id); u.isVerified = !u.isVerified; saveDB(); renderAdminList(); }
     function toggleBan(id) { let u = users.find(x => x.id === id); if(u.id === me.id) return; u.banned = !u.banned; saveDB(); renderAdminList(); }
-    function deleteUser(id) { if(id === "ZEN-0001") return; if(confirm("¿Eliminar para siempre?")) { users = users.filter(x => x.id !== id); saveDB(); renderAdminList(); }}
-    function updateColor(id, color) { let u = users.find(x => x.id === id); u.vColor = color; saveDB(); renderAdminList(); }
-    function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
+    function deleteUser(id) { if(id === "123-abc") return; if(confirm("¿Borrar?")) { users = users.filter(x => x.id !== id); saveDB(); renderAdminList(); }}
     function logout() { me = null; location.reload(); }
-    function copyMyID() { navigator.clipboard.writeText(me.id); alert("¡Copiado!"); }
+    function copyMyID() { navigator.clipboard.writeText(me.id); alert("Copiado!"); }
   </script>
 </body>
