@@ -11,47 +11,18 @@
   .v-gold { background: #facc15; }
   .v-green { background: #10b981; }
   .v-purple { background: #a855f7; }
-
   @keyframes shine-vip { 0% {background-position: 0% 50%} 100% {background-position: 200% 50%} }
   .zen-logo { background: linear-gradient(135deg, #6366f1, #4f46e5, #4338ca); }
   .admin-panel-neon { background: rgba(2, 6, 23, 0.98); border: 1px solid #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
-  
-  /* PANTALLA DE FUERA DE SERVICIO */
-  .maintenance-active { 
-    position: fixed; inset: 0; z-index: 9999; 
-    background: radial-gradient(circle, #1e1b4b, #020617);
-    display: flex; flex-col; items-center; justify-content: center;
-    text-align: center; color: white;
-  }
+  .maintenance-active { position: fixed; inset: 0; z-index: 9999; background: #020617; display: flex; align-items: center; justify-content: center; text-align: center; }
 </style>
 
 <body class="bg-slate-950 font-sans text-slate-100 overflow-hidden">
   <div id="app">
-    
-    <div id="maintenance-screen" class="hidden maintenance-active">
-        <div class="p-10 bg-white/5 backdrop-blur-xl rounded-[4rem] border border-white/10 shadow-2xl">
-            <div class="text-8xl mb-6 animate-pulse">⚙️</div>
-            <h1 class="text-5xl font-black italic tracking-tighter mb-4">ZenMail</h1>
-            <h2 class="text-2xl font-bold text-indigo-400 uppercase tracking-widest">Fuera de Servicio</h2>
-            <p class="mt-4 text-slate-400 max-w-xs mx-auto">Estamos realizando mejoras críticas en el servidor. Vuelve más tarde.</p>
-            <div class="mt-8 flex justify-center gap-2">
-                <div class="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"></div>
-                <div class="w-2 h-2 bg-indigo-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                <div class="w-2 h-2 bg-indigo-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-            </div>
-            <button onclick="checkAdmin()" class="mt-10 text-white/5 opacity-0">Admin Login</button>
-        </div>
-    </div>
-
-    <div id="note-modal" class="hidden fixed inset-0 z-[1000] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl">
-            <h2 class="text-2xl font-black text-slate-800 mb-2 italic">Crear Recordatorio</h2>
-            <textarea id="note-text" placeholder="Escribe aquí tu nota..." class="w-full h-32 p-4 bg-slate-100 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none text-slate-800 font-bold resize-none mb-6"></textarea>
-            <div class="flex gap-3">
-                <button onclick="closeNote()" class="flex-1 py-4 bg-slate-200 text-slate-600 rounded-2xl font-black uppercase text-xs">Cancelar</button>
-                <button onclick="saveNote()" class="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs">Guardar</button>
-            </div>
-        </div>
+    <div id="maint-view" class="hidden maintenance-active flex-col">
+        <h1 class="text-6xl font-black italic text-indigo-500">ZenMail</h1>
+        <h2 class="text-2xl font-bold mt-4 uppercase">Fuera de Servicio</h2>
+        <p class="text-slate-500 mt-2">Estamos mejorando el sistema...</p>
     </div>
 
     <div id="register-screen" class="h-screen flex flex-col items-center justify-center bg-black/50 p-6">
@@ -73,39 +44,34 @@
             <div class="w-10 h-10 rounded-2xl zen-logo flex items-center justify-center text-white font-black italic shadow-lg">Z</div>
             <h2 class="text-xl font-black tracking-tighter">ZenMail</h2>
           </div>
-          <button onclick="loadMessages()" class="w-full p-4 bg-indigo-600 text-white rounded-[2rem] font-bold text-left flex gap-3 italic shadow-lg">📥 Bandeja</button>
+          <button onclick="loadMessages()" class="w-full p-4 bg-indigo-600 text-white rounded-[2rem] font-bold text-left flex gap-3 italic">📥 Bandeja</button>
           <button onclick="openNote()" class="w-full p-4 bg-white border text-slate-600 rounded-[2rem] font-bold text-left flex gap-3 hover:bg-indigo-50 italic">📝 Notas</button>
+          <button onclick="alert('Papelera vacía')" class="w-full p-4 bg-white border text-slate-400 rounded-[2rem] font-bold text-left flex gap-3 hover:bg-red-50 italic">🗑️ Papelera</button>
         </div>
         <div class="p-5 bg-white rounded-[3rem] border shadow-inner text-center">
-            <img id="user-img-final" class="w-16 h-16 mx-auto mb-3 rounded-full border-2 object-cover" src="">
+            <img id="user-img-final" class="w-16 h-16 mx-auto mb-3 rounded-full border-2 object-cover">
             <div class="flex items-center justify-center gap-1">
                 <span id="user-display" class="font-bold text-[11px] truncate text-slate-700"></span>
-                <div id="v-badge" class="hidden badge-vip"><svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div>
                 <div id="check-badge" class="hidden flex items-center justify-center rounded-full p-0.5"><svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div>
             </div>
-            <button onclick="logoutNow()" class="mt-3 text-[9px] uppercase font-bold text-red-500">Cerrar Sesión</button>
+            <button onclick="logoutNow()" class="mt-2 text-[9px] uppercase font-bold text-red-500">Cerrar Sesión</button>
         </div>
       </aside>
 
       <main class="flex-1 flex flex-col">
-        <header class="p-6 border-b bg-white">
-            <div class="relative w-1/2">
-                <input type="text" id="search-input" onkeyup="searchEngine()" placeholder="Buscar ZenMail..." class="w-full p-3 bg-slate-100 rounded-2xl outline-none text-sm font-bold">
-                <div id="results-box" class="absolute top-full left-0 w-full bg-white shadow-2xl rounded-3xl mt-2 hidden z-[100] border overflow-hidden"></div>
-            </div>
-        </header>
+        <header class="p-6 border-b bg-white"><div class="relative w-1/2"><input type="text" id="search-input" onkeyup="searchEngine()" placeholder="Buscar ZenMail..." class="w-full p-3 bg-slate-100 rounded-2xl outline-none text-sm font-bold"></div></header>
         <div id="email-list" class="flex-1 p-8 overflow-y-auto space-y-4 bg-slate-50/50"></div>
       </main>
     </div>
 
     <div id="admin-panel" class="hidden fixed inset-0 bg-black/95 backdrop-blur-xl z-[500] flex items-center justify-center p-4">
-      <div class="admin-panel-neon rounded-[3rem] w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="admin-panel-neon rounded-[3rem] w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden">
         <div class="p-6 bg-slate-900 flex justify-between items-center border-b border-blue-900 text-white">
-          <h2 class="text-xl font-black text-blue-400 italic">ADMIN CONTROL CENTER</h2>
+          <h2 class="text-xl font-black text-blue-400 italic">ZEN ADMIN</h2>
           <div class="flex items-center gap-3">
-            <button id="maintenance-toggle" onclick="toggleMaintenance()" class="px-4 py-2 rounded-xl text-[10px] font-black uppercase text-white shadow-lg bg-green-600">🛠️ Modo: Normal</button>
-            <button onclick="sendGlobalMessage()" class="bg-indigo-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase text-white shadow-lg">📢 Global</button>
-            <button onclick="closeAdmin()" class="bg-red-600 px-6 py-2 rounded-xl text-[10px] font-bold uppercase">Cerrar</button>
+            <button id="maint-btn" onclick="toggleMaint()" class="bg-orange-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase">Mantenimiento: OFF</button>
+            <button onclick="sendGlobal()" class="bg-indigo-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase text-white">📢 Global</button>
+            <button onclick="closeAdmin()" class="bg-red-600 px-6 py-2 rounded-xl text-[10px] font-bold uppercase">Salir</button>
           </div>
         </div>
         <div id="admin-db-list" class="flex-1 p-6 overflow-y-auto space-y-3 bg-slate-950/50"></div>
@@ -115,10 +81,9 @@
 
   <script>
     const MASTER_SECURITY_KEY = "ZM_X99_ROOT_#SECURITY_2026";
-    let isMaintenance = JSON.parse(localStorage.getItem('zen_maint_status')) || false;
+    let isMaint = JSON.parse(localStorage.getItem('zen_maint')) || false;
     let usersDB = JSON.parse(localStorage.getItem('zen_users')) || [
-      { email: "ZenMail@ZenMail.com", pass: "SYS_Zen_&99*Alpha", isVip: true, isVerified: true, vColor: "v-blue", isBanned: false, photo: "https://ui-avatars.com/api/?name=Z&background=4f46e5&color=fff" },
-      { email: "admin@zenmail.com", pass: "ZM_admin_#2026!X", isVip: true, isVerified: true, vColor: "v-gold", isBanned: false, photo: "https://ui-avatars.com/api/?name=A&background=facc15&color=000" }
+      { email: "admin@zenmail.com", pass: "123", isVerified: true, vColor: "v-gold", isBanned: false, photo: "https://ui-avatars.com/api/?name=Admin" }
     ];
     let messagesDB = JSON.parse(localStorage.getItem('zen_messages')) || [];
     let currentUser = null;
@@ -126,41 +91,21 @@
     function save() {
       localStorage.setItem('zen_users', JSON.stringify(usersDB));
       localStorage.setItem('zen_messages', JSON.stringify(messagesDB));
-      localStorage.setItem('zen_maint_status', JSON.stringify(isMaintenance));
+      localStorage.setItem('zen_maint', JSON.stringify(isMaint));
     }
 
-    // ACTUALIZAR ESTADO DE PANTALLA
-    function checkStatus() {
-        const screen = document.getElementById('maintenance-screen');
-        if (isMaintenance) {
-            // Si hay mantenimiento, ocultar todo para usuarios normales
-            if (!currentUser || (currentUser.email !== "admin@zenmail.com" && currentUser.email !== "ZenMail@ZenMail.com")) {
-                screen.classList.remove('hidden');
-            } else {
-                screen.classList.add('hidden'); // Admin puede entrar
-            }
-        } else {
-            screen.classList.add('hidden');
-        }
+    function checkMaint() {
+        const view = document.getElementById('maint-view');
+        if (isMaint && (!currentUser || currentUser.email !== "admin@zenmail.com")) {
+            view.classList.remove('hidden');
+        } else { view.classList.add('hidden'); }
     }
 
-    function toggleMaintenance() {
-        isMaintenance = !isMaintenance;
+    function toggleMaint() {
+        isMaint = !isMaint;
         save();
-        updateMaintButton();
-        checkStatus();
-        alert(isMaintenance ? "Mantenimiento ACTIVADO" : "Mantenimiento DESACTIVADO");
-    }
-
-    function updateMaintButton() {
-        const btn = document.getElementById('maintenance-toggle');
-        if (isMaintenance) {
-            btn.innerText = "🛠️ Modo: Mantenimiento";
-            btn.className = "px-4 py-2 rounded-xl text-[10px] font-black uppercase text-white shadow-lg bg-orange-600 animate-pulse";
-        } else {
-            btn.innerText = "🛠️ Modo: Normal";
-            btn.className = "px-4 py-2 rounded-xl text-[10px] font-black uppercase text-white shadow-lg bg-green-600";
-        }
+        updateAdminList();
+        checkMaint();
     }
 
     function handleAuth() {
@@ -168,56 +113,39 @@
       const pass = document.getElementById('reg-pass').value.trim();
       const email = user.includes('@') ? user : user + "@zenmail.com";
       let found = usersDB.find(u => u.email.toLowerCase() === email.toLowerCase());
-      
       if(found) {
-        if(found.pass !== pass) return alert("Error.");
+        if(found.isBanned) return alert("CUENTA BANEADA");
+        if(found.pass !== pass) return alert("Contraseña incorrecta");
         currentUser = found;
       } else {
-        currentUser = { email, pass, isVip: false, isVerified: false, vColor: "v-blue", isBanned: false, photo: `https://ui-avatars.com/api/?name=${user}` };
+        currentUser = { email, pass, isVerified: false, vColor: "v-blue", isBanned: false, photo: `https://ui-avatars.com/api/?name=${user}` };
         usersDB.push(currentUser);
         save();
       }
-      checkStatus();
-      if (!isMaintenance || (currentUser.email === "admin@zenmail.com" || currentUser.email === "ZenMail@ZenMail.com")) {
-          enterApp();
-      }
+      checkMaint();
+      if (!isMaint || currentUser.email === "admin@zenmail.com") enterApp();
     }
 
     function enterApp() {
       document.getElementById('user-display').innerText = currentUser.email;
       document.getElementById('user-img-final').src = currentUser.photo;
-      document.getElementById('v-badge').classList.toggle('hidden', !currentUser.isVip);
       const cb = document.getElementById('check-badge');
       cb.classList.toggle('hidden', !currentUser.isVerified);
-      cb.className = `hidden flex items-center justify-center rounded-full p-0.5 ${currentUser.vColor || 'v-blue'}`;
+      cb.className = `hidden flex items-center justify-center rounded-full p-0.5 ${currentUser.vColor}`;
       document.getElementById('register-screen').classList.add('hidden');
       document.getElementById('main-screen').classList.remove('hidden');
       loadMessages();
     }
 
-    function checkAdmin() {
-      if(prompt("ROOT ACCESS:") === MASTER_SECURITY_KEY) {
-        updateAdminList();
-        updateMaintButton();
-        document.getElementById('admin-panel').classList.remove('hidden');
-      }
-    }
-
-    function sendGlobalMessage() {
-        const txt = prompt("Mensaje Global:");
-        if(!txt) return;
-        usersDB.forEach(u => messagesDB.push({ from: currentUser.email, to: u.email, text: "📢 " + txt, senderVerified: true, senderColor: currentUser.vColor }));
-        save(); loadMessages();
-    }
-
     function updateAdminList() {
+      document.getElementById('maint-btn').innerText = `Mantenimiento: ${isMaint ? 'ON' : 'OFF'}`;
       document.getElementById('admin-db-list').innerHTML = usersDB.map(u => `
         <div class="p-4 bg-slate-900 border border-blue-900/30 rounded-2xl flex items-center justify-between">
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-4 text-white">
             <img src="${u.photo}" class="w-10 h-10 rounded-full border border-blue-500">
             <div>
-                <p class="text-white font-bold text-xs">${u.email}</p>
-                <select onchange="changeVColor('${u.email}', this.value)" class="bg-black text-[8px] border border-blue-900 rounded text-white mt-1">
+                <p class="font-bold text-xs">${u.email} ${u.isBanned ? '<span class="text-red-500">[BAN]</span>' : ''}</p>
+                <select onchange="changeColor('${u.email}', this.value)" class="bg-black text-[8px] border border-blue-900 rounded text-white mt-1">
                     <option value="v-blue" ${u.vColor==='v-blue'?'selected':''}>Azul</option>
                     <option value="v-gold" ${u.vColor==='v-gold'?'selected':''}>Dorado</option>
                     <option value="v-green" ${u.vColor==='v-green'?'selected':''}>Verde</option>
@@ -225,49 +153,76 @@
             </div>
           </div>
           <div class="flex gap-2">
-            <button onclick="toggleVerify('${u.email}')" class="bg-blue-600 px-3 py-1 rounded-lg text-[8px] font-black uppercase text-white">Verificar</button>
-            <button onclick="banUser('${u.email}')" class="bg-red-600 px-3 py-1 rounded-lg text-[8px] font-black uppercase text-white">Banear</button>
+            <button onclick="spy('${u.email}')" class="bg-indigo-600 px-3 py-1 rounded-lg text-[8px] font-black text-white">MENSAJES 👁️</button>
+            <button onclick="toggleV('${u.email}')" class="bg-blue-600 px-3 py-1 rounded-lg text-[8px] font-black text-white">VERIFICAR</button>
+            <button onclick="ban('${u.email}')" class="bg-orange-600 px-3 py-1 rounded-lg text-[8px] font-black text-white">${u.isBanned ? 'DESBAN' : 'BAN'}</button>
+            <button onclick="del('${u.email}')" class="bg-red-600 px-3 py-1 rounded-lg text-[8px] font-black text-white">ELIMINAR</button>
           </div>
         </div>`).join('');
     }
 
-    function changeVColor(email, color) { let u = usersDB.find(u => u.email === email); u.vColor = color; save(); updateAdminList(); if(currentUser.email === email) enterApp(); }
-    function toggleVerify(email) { let u = usersDB.find(u => u.email === email); u.isVerified = !u.isVerified; save(); updateAdminList(); if(currentUser.email === email) enterApp(); }
-    function banUser(email) { alert("Usuario Baneado"); }
+    function ban(email) {
+        let u = usersDB.find(u => u.email === email);
+        u.isBanned = !u.isBanned;
+        save(); updateAdminList();
+    }
+
+    function del(email) {
+        if(confirm("¿Eliminar cuenta permanentemente?")) {
+            usersDB = usersDB.filter(u => u.email !== email);
+            save(); updateAdminList();
+        }
+    }
+
+    function toggleV(email) {
+        let u = usersDB.find(u => u.email === email);
+        u.isVerified = !u.isVerified;
+        save(); updateAdminList();
+    }
+
+    function changeColor(email, color) {
+        let u = usersDB.find(u => u.email === email);
+        u.vColor = color;
+        save(); updateAdminList();
+    }
+
+    function spy(email) {
+        const msgs = messagesDB.filter(m => m.from === email);
+        alert(msgs.map(m => `A: ${m.to} | MSG: ${m.text}`).join('\n\n') || "No hay mensajes.");
+    }
+
+    function sendGlobal() {
+        const t = prompt("Mensaje Global:");
+        if(t) { usersDB.forEach(u => messagesDB.push({ from: "SISTEMA", to: u.email, text: t })); save(); loadMessages(); }
+    }
+
+    function checkAdmin() {
+      if(prompt("CLAVE ADMIN:") === MASTER_SECURITY_KEY) {
+        updateAdminList();
+        document.getElementById('admin-panel').classList.remove('hidden');
+      }
+    }
 
     function loadMessages() {
       const list = document.getElementById('email-list');
       const my = messagesDB.filter(m => m.to.toLowerCase() === currentUser.email.toLowerCase());
-      list.innerHTML = my.reverse().map(m => `<div class="p-6 bg-white rounded-[2rem] border shadow-sm flex flex-col gap-2"><b>De: ${m.from}</b><p>${m.text}</p></div>`).join('');
+      list.innerHTML = my.reverse().map(m => `<div class="p-6 bg-white rounded-3xl border shadow-sm flex flex-col gap-2"><b>De: ${m.from}</b><p>${m.text}</p></div>`).join('');
     }
 
     function searchEngine() {
       const q = document.getElementById('search-input').value.toLowerCase();
-      const box = document.getElementById('results-box');
-      if(q.length < 1) { box.classList.add('hidden'); return; }
-      const matches = usersDB.filter(u => u.email.toLowerCase().includes(q));
-      box.classList.remove('hidden');
-      box.innerHTML = matches.map(u => `<div onclick="openChat('${u.email}')" class="p-4 hover:bg-slate-50 cursor-pointer text-xs font-bold border-b">${u.email}</div>`).join('');
+      if(q.length < 1) return;
+      let u = usersDB.find(u => u.email.toLowerCase().includes(q));
+      if(u) {
+          const m = prompt("Mensaje para " + u.email);
+          if(m) { messagesDB.push({from: currentUser.email, to: u.email, text: m}); save(); }
+      }
     }
 
-    function openChat(to) {
-      const txt = prompt(`Correo para ${to}:`);
-      if(txt) { messagesDB.push({ from: currentUser.email, to: to, text: txt }); save(); alert("Enviado"); }
-      document.getElementById('results-box').classList.add('hidden');
-    }
-
-    function openNote() { document.getElementById('note-modal').classList.remove('hidden'); }
-    function closeNote() { document.getElementById('note-modal').classList.add('hidden'); }
-    function saveNote() {
-        const text = document.getElementById('note-text').value.trim();
-        if(!text) return;
-        messagesDB.push({ from: "MI NOTA 📝", to: currentUser.email, text: text });
-        save(); loadMessages(); closeNote();
-    }
-    function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
     function logoutNow() { currentUser = null; location.reload(); }
-
-    // Ejecutar al cargar para ver si está en mantenimiento
-    checkStatus();
+    function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
+    function openNote() { const n = prompt("Nota:"); if(n) { messagesDB.push({from: "NOTA", to: currentUser.email, text: n}); save(); loadMessages(); }}
+    
+    checkMaint();
   </script>
 </body>
