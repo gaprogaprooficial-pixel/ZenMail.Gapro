@@ -9,10 +9,9 @@
   .bubble-in { background-color: #202c33; border-radius: 0 15px 15px 15px; align-self: flex-start; }
   .bubble-out { background-color: #005c4b; border-radius: 15px 0 15px 15px; align-self: flex-end; }
   
-  /* COLORES DE VERIFICADOS */
-  .v-gold { color: #facc15; filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.5)); }
-  .v-blue { color: #3b82f6; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.5)); }
-  .v-green { color: #22c55e; filter: drop-shadow(0 0 5px rgba(34, 197, 94, 0.5)); }
+  .v-gold { color: #facc15; filter: drop-shadow(0 0 3px #facc15); }
+  .v-blue { color: #3b82f6; filter: drop-shadow(0 0 3px #3b82f6); }
+  .v-green { color: #22c55e; filter: drop-shadow(0 0 3px #22c55e); }
   
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
@@ -21,22 +20,17 @@
 <body class="bg-[#111b21] font-sans text-slate-200 overflow-hidden">
   
   <div id="maint-screen" class="hidden fixed inset-0 bg-black z-[5000] flex flex-col items-center justify-center text-center p-6">
-      <h1 class="text-4xl font-black text-white mb-4 uppercase italic">Servidor en Mantenimiento</h1>
-      <p class="text-slate-400">Vuelve más tarde.</p>
+      <h1 class="text-5xl font-black text-red-600 mb-4 uppercase italic italic">SISTEMA CERRADO</h1>
+      <p class="text-slate-400 text-xl font-bold">MANTENIMIENTO GLOBAL EN CURSO</p>
   </div>
 
   <div id="app">
     <div id="login-screen" class="h-screen flex flex-col items-center justify-center bg-[#111b21]">
-      <div class="text-center mb-10">
-          <div class="w-24 h-24 bg-[#00a884] rounded-3xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-          </div>
-          <h1 class="text-4xl font-black text-white tracking-widest uppercase italic">ZenMail</h1>
-      </div>
+      <h1 class="text-4xl font-black text-[#00a884] mb-8 uppercase italic italic tracking-widest">ZenMail</h1>
       <div class="bg-[#222e35] p-8 rounded-2xl w-[380px] shadow-2xl border-t-4 border-[#00a884]">
-        <input type="text" id="login-user" placeholder="Tu nombre" class="w-full p-4 bg-[#2a3942] rounded-xl outline-none mb-4 text-white">
-        <input type="password" id="login-pass" placeholder="Contraseña" class="w-full p-4 bg-[#2a3942] rounded-xl outline-none mb-6 text-white">
-        <button onclick="auth()" class="w-full bg-[#00a884] py-4 rounded-xl font-black text-[#111b21] uppercase tracking-widest hover:bg-[#06cf9c]">Entrar</button>
+        <input type="text" id="login-user" placeholder="Usuario" class="w-full p-4 bg-[#2a3942] rounded-xl outline-none mb-4 text-white">
+        <input type="password" id="login-pass" placeholder="Password" class="w-full p-4 bg-[#2a3942] rounded-xl outline-none mb-6 text-white">
+        <button onclick="auth()" class="w-full bg-[#00a884] py-4 rounded-xl font-black text-[#111b21] uppercase">Entrar</button>
       </div>
     </div>
 
@@ -47,24 +41,22 @@
                 <img id="my-avatar" onclick="openAdminPanel()" class="w-10 h-10 rounded-full cursor-pointer object-cover">
                 <div>
                     <div class="flex items-center gap-1">
-                        <p id="my-name-display" class="text-xs font-bold text-white"></p>
-                        <span id="my-badge-display"></span>
+                        <p id="my-name-display" class="text-xs font-bold"></p>
+                        <span id="my-badges" class="flex gap-0.5"></span>
                     </div>
-                    <p id="my-id-display" onclick="copyMyID()" class="text-[10px] text-[#00a884] font-black cursor-pointer"></p>
+                    <p id="my-id-display" class="text-[10px] text-[#00a884] font-black"></p>
                 </div>
             </div>
-            <button onclick="logout()" class="text-slate-400">❌</button>
+            <button onclick="logout()">❌</button>
         </header>
-
-        <div class="p-4 space-y-3">
+        <div class="p-4 space-y-2">
+            <button onclick="contactAdmin()" class="w-full bg-blue-600/20 border border-blue-600 text-blue-400 py-2 rounded-lg text-[10px] font-black uppercase">Contactar Admin (123-abc)</button>
             <div class="flex gap-2">
-                <input type="text" id="id-search-input" placeholder="Buscar ID..." class="flex-1 p-2.5 bg-[#202c33] rounded-lg text-xs outline-none text-white border border-white/10 focus:border-[#00a884]">
-                <button onclick="searchByID()" class="bg-[#00a884] px-4 rounded-lg text-xs font-bold text-[#111b21]">BUSCAR</button>
+                <input type="text" id="id-search-input" placeholder="ID..." class="flex-1 p-2 bg-[#202c33] rounded text-xs outline-none border border-white/10">
+                <button onclick="searchByID()" class="bg-[#00a884] px-3 rounded text-[10px] font-bold text-black">BUSCAR</button>
             </div>
-            <button onclick="contactAdmin()" class="w-full bg-[#3b82f6]/20 border border-[#3b82f6] text-[#3b82f6] py-2 rounded-lg text-[10px] font-black uppercase">📞 Contactar Admin (123-abc)</button>
-            <div id="id-result-container"></div>
         </div>
-        <div id="chats-list" class="flex-1 overflow-y-auto border-t border-white/5"></div>
+        <div id="chats-list" class="flex-1 overflow-y-auto"></div>
       </aside>
 
       <main class="flex-1 flex flex-col chat-wallpaper">
@@ -73,167 +65,173 @@
                 <div id="target-avatar" class="w-10 h-10 rounded-full"></div>
                 <div class="flex flex-col">
                     <div class="flex items-center gap-1">
-                        <span id="target-name" class="font-bold text-white text-sm"></span>
-                        <span id="target-badge"></span>
+                        <span id="target-name" class="font-bold text-white"></span>
+                        <span id="target-badges" class="flex gap-0.5"></span>
                     </div>
-                    <span id="target-id-label" class="text-[9px] text-slate-400 font-bold uppercase tracking-widest"></span>
+                    <span id="target-id-label" class="text-[9px] text-slate-400 font-bold uppercase"></span>
                 </div>
             </div>
             <button onclick="clearChat()" class="text-red-500 text-[10px] font-black border border-red-500 px-2 py-1 rounded">BORRAR CHAT</button>
         </header>
         <div id="messages-flow" class="flex-1 p-8 overflow-y-auto flex flex-col gap-4"></div>
-        <div id="chat-input-bar" class="hidden p-4 bg-[#202c33] flex items-center gap-4 border-l border-white/5">
-            <input type="text" id="msg-input" placeholder="Mensaje..." class="flex-1 p-3 bg-[#2a3942] rounded-xl outline-none text-white text-sm">
+        <div id="chat-input-bar" class="hidden p-4 bg-[#202c33] flex items-center gap-4">
+            <input type="text" id="msg-input" placeholder="Mensaje..." class="flex-1 p-3 bg-[#2a3942] rounded-xl outline-none text-white">
             <button onclick="send()" class="text-[#00a884] font-black px-4">ENVIAR</button>
         </div>
       </main>
     </div>
 
-    <div id="admin-modal" class="hidden fixed inset-0 bg-black/90 z-[1000] flex items-center justify-center p-6">
-      <div class="bg-[#111b21] border border-[#00a884]/30 rounded-3xl w-full max-w-4xl h-[80vh] flex flex-col">
-        <header class="p-5 bg-[#202c33] flex justify-between items-center">
-          <h2 class="font-black text-[#00a884] uppercase">Control Maestro</h2>
-          <button onclick="closeAdmin()" class="bg-red-600 px-4 py-1 rounded text-xs text-white">CERRAR</button>
+    <div id="admin-modal" class="hidden fixed inset-0 bg-black/95 z-[1000] flex flex-col p-6">
+        <header class="flex justify-between items-center mb-6">
+            <h2 class="text-[#00a884] font-black text-2xl tracking-tighter uppercase italic">Control Maestro</h2>
+            <div class="flex gap-4">
+                <button id="global-maint-btn" onclick="toggleGlobalMaint()" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded text-xs text-white font-black uppercase">MANTENIMIENTO GLOBAL</button>
+                <button onclick="closeAdmin()" class="bg-white/10 px-6 py-2 rounded text-xs text-white font-black uppercase">Cerrar</button>
+            </div>
         </header>
-        <div id="admin-list-container" class="flex-1 p-6 overflow-y-auto space-y-4"></div>
-      </div>
+        <div id="admin-list-container" class="flex-1 overflow-y-auto space-y-4"></div>
     </div>
   </div>
 
   <script>
     const ADMIN_PASS = "ZM_X99_ROOT_#SECURITY_2026";
     let users = JSON.parse(localStorage.getItem('za_id_users')) || [
-        { id: "123-abc", name: "Admin ZenMail", pass: "root", banned: false, isMaint: false, badge: "gold", photo: "https://ui-avatars.com/api/?name=Admin&background=00a884&color=fff" }
+        { id: "123-abc", name: "Admin", pass: "root", banned: false, isMaint: false, badges: {gold: true, blue: true, green: true}, photo: "https://ui-avatars.com/api/?name=A&background=00a884&color=fff" }
     ];
     let messages = JSON.parse(localStorage.getItem('za_id_messages')) || [];
+    let globalMaint = JSON.parse(localStorage.getItem('za_global_maint')) || false;
     let me = null;
     let talkingTo = null;
 
-    const BADGES = {
+    const ICONS = {
         gold: '<svg class="w-3.5 h-3.5 v-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.64.304 1.24.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>',
         blue: '<svg class="w-3.5 h-3.5 v-blue" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293l-4 4a1 1 0 01-1.414 0l-2-2a1 1 0 111.414-1.414L9 10.586l3.293-3.293a1 1 0 111.414 1.414z"></path></svg>',
         green: '<svg class="w-3.5 h-3.5 v-green" fill="currentColor" viewBox="0 0 20 20"><path d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"></path></svg>'
     };
 
+    function getBadgesHTML(b) {
+        if(!b) return '';
+        let html = '';
+        if(b.gold) html += ICONS.gold;
+        if(b.blue) html += ICONS.blue;
+        if(b.green) html += ICONS.green;
+        return html;
+    }
+
     function saveDB() {
       localStorage.setItem('za_id_users', JSON.stringify(users));
       localStorage.setItem('za_id_messages', JSON.stringify(messages));
+      localStorage.setItem('za_global_maint', JSON.stringify(globalMaint));
     }
 
-    // SINCRONIZACIÓN EN TIEMPO REAL
     setInterval(() => {
         users = JSON.parse(localStorage.getItem('za_id_users')) || users;
-        messages = JSON.parse(localStorage.getItem('za_id_messages')) || messages;
+        globalMaint = JSON.parse(localStorage.getItem('za_global_maint'));
         if(me) {
-            let userState = users.find(u => u.id === me.id);
-            if(userState) {
-                if(userState.isMaint) document.getElementById('maint-screen').classList.remove('hidden');
-                else document.getElementById('maint-screen').classList.add('hidden');
-                document.getElementById('my-badge-display').innerHTML = BADGES[userState.badge] || '';
-            }
+            let u = users.find(x => x.id === me.id);
+            if(globalMaint && me.id !== "123-abc") document.getElementById('maint-screen').classList.remove('hidden');
+            else if(u && u.isMaint) document.getElementById('maint-screen').classList.remove('hidden');
+            else document.getElementById('maint-screen').classList.add('hidden');
+            
+            document.getElementById('my-badges').innerHTML = getBadgesHTML(u.badges);
             if(talkingTo) renderMessages();
         }
     }, 1000);
+
+    function toggleGlobalMaint() {
+        globalMaint = !globalMaint;
+        saveDB();
+        document.getElementById('global-maint-btn').innerText = globalMaint ? "QUITAR MANT. GLOBAL" : "MANTENIMIENTO GLOBAL";
+        alert(globalMaint ? "Mantenimiento Global Activado" : "Mantenimiento Global Desactivado");
+    }
+
+    function toggleBadge(id, type) {
+        let u = users.find(x => x.id === id);
+        if(!u.badges) u.badges = {};
+        u.badges[type] = !u.badges[type];
+        saveDB(); renderAdminList();
+    }
 
     function auth() {
       const uName = document.getElementById('login-user').value.trim();
       const uPass = document.getElementById('login-pass').value.trim();
       let user = users.find(x => x.name.toLowerCase() === uName.toLowerCase() && x.pass === uPass);
-      if(user) {
-        if(user.banned) return alert("BAN");
-        me = user;
-      } else {
+      if(user) { if(user.banned) return alert("BAN"); me = user; }
+      else {
         const newID = "ZEN-" + Math.floor(1000 + Math.random() * 9000);
-        me = { id: newID, name: uName, pass: uPass, banned: false, isMaint: false, badge: 'none', photo: `https://ui-avatars.com/api/?name=${uName}&background=random` };
-        users.push(me);
-        saveDB();
+        me = { id: newID, name: uName, pass: uPass, banned: false, isMaint: false, badges: {}, photo: `https://ui-avatars.com/api/?name=${uName}&background=random` };
+        users.push(me); saveDB();
       }
-      startApp();
-    }
-
-    function startApp() {
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('chat-interface').classList.remove('hidden');
-      document.getElementById('my-avatar').src = me.photo;
       document.getElementById('my-name-display').innerText = me.name;
       document.getElementById('my-id-display').innerText = me.id;
+      document.getElementById('my-avatar').src = me.photo;
       renderHistory();
-    }
-
-    function openChat(id) {
-        talkingTo = id;
-        const target = users.find(x => x.id === id);
-        document.getElementById('chat-header').classList.remove('hidden');
-        document.getElementById('chat-input-bar').classList.remove('hidden');
-        document.getElementById('target-name').innerText = target.name;
-        document.getElementById('target-id-label').innerText = target.id;
-        document.getElementById('target-badge').innerHTML = BADGES[target.badge] || '';
-        document.getElementById('target-avatar').innerHTML = `<img src="${target.photo}" class="w-full h-full rounded-full">`;
-        renderMessages();
-    }
-
-    function renderMessages() {
-      const flow = document.getElementById('messages-flow');
-      const conv = messages.filter(m => (m.from === me.id && m.to === talkingTo) || (m.from === talkingTo && m.to === me.id));
-      flow.innerHTML = conv.map(m => `<div class="flex flex-col ${m.from === me.id ? 'items-end' : 'items-start'}"><div class="p-3 max-w-[75%] ${m.from === me.id ? 'bubble-out' : 'bubble-in'}"><p class="text-sm text-white">${m.text}</p></div></div>`).join('');
-      flow.scrollTop = flow.scrollHeight;
-    }
-
-    function renderHistory() {
-      const list = document.getElementById('chats-list');
-      const contacts = [...new Set(messages.filter(m => m.to === me.id || m.from === me.id).map(m => m.from === me.id ? m.to : m.from))];
-      list.innerHTML = contacts.map(cid => {
-          const u = users.find(x => x.id === cid);
-          if(!u) return '';
-          return `<div onclick="openChat('${u.id}')" class="p-4 flex items-center gap-4 hover:bg-[#202c33] cursor-pointer border-b border-white/5"><img src="${u.photo}" class="w-10 h-10 rounded-full"><div><p class="text-white text-sm font-bold flex items-center gap-1">${u.name} ${BADGES[u.badge] || ''}</p></div></div>`;
-      }).join('');
-    }
-
-    function openAdminPanel() {
-      if(prompt("PASSWORD:") === ADMIN_PASS) { renderAdminList(); document.getElementById('admin-modal').classList.remove('hidden'); }
     }
 
     function renderAdminList() {
       document.getElementById('admin-list-container').innerHTML = users.map(u => `
-        <div class="p-5 bg-[#202c33] rounded-2xl flex items-center justify-between border border-white/5">
+        <div class="p-4 bg-[#202c33] rounded-xl flex items-center justify-between border border-white/5">
             <div class="flex items-center gap-4">
                 <img src="${u.photo}" class="w-12 h-12 rounded-full">
                 <div>
-                    <p class="text-white text-sm font-black">${u.name} (Clave: ${u.pass})</p>
-                    <p class="text-[#00a884] text-[10px]">ID: ${u.id}</p>
-                    <div class="mt-2 flex gap-1">
-                        <select onchange="setBadge('${u.id}', this.value)" class="bg-black text-[9px] text-white p-1 rounded border border-white/20">
-                            <option value="none" ${u.badge==='none'?'selected':''}>Sin Verificado</option>
-                            <option value="gold" ${u.badge==='gold'?'selected':''}>Dorado (Admin)</option>
-                            <option value="blue" ${u.badge==='blue'?'selected':''}>Azul (Famoso)</option>
-                            <option value="green" ${u.badge==='green'?'selected':''}>Verde (VIP)</option>
-                        </select>
+                    <p class="text-white font-bold">${u.name} <span class="text-yellow-500 text-[10px]">(${u.pass})</span></p>
+                    <p class="text-slate-400 text-[10px]">${u.id}</p>
+                    <div class="flex gap-1 mt-2">
+                        <button onclick="toggleBadge('${u.id}', 'gold')" class="${u.badges?.gold?'bg-yellow-500 text-black':'bg-black/40 text-white'} px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter">ADMIN</button>
+                        <button onclick="toggleBadge('${u.id}', 'green')" class="${u.badges?.green?'bg-green-500 text-black':'bg-black/40 text-white'} px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter">VIP</button>
+                        <button onclick="toggleBadge('${u.id}', 'blue')" class="${u.badges?.blue?'bg-blue-500 text-black':'bg-black/40 text-white'} px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter">AZUL</button>
                     </div>
                 </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="toggleMaint('${u.id}')" class="bg-red-500 px-3 py-1 rounded text-[9px] text-white font-bold">${u.isMaint ? 'QUITAR MANT.' : 'MANT.'}</button>
-                <button onclick="toggleBan('${u.id}')" class="bg-orange-600 px-3 py-1 rounded text-[9px] text-white font-bold">BANEAR</button>
+                <button onclick="toggleSingleMaint('${u.id}')" class="bg-red-500 px-3 py-1 rounded text-[9px] font-bold">${u.isMaint?'LIBERAR':'CERRAR'}</button>
+                <button onclick="toggleBan('${u.id}')" class="bg-orange-600 px-3 py-1 rounded text-[9px] font-bold">BAN</button>
             </div>
         </div>`).join('');
     }
 
-    function setBadge(id, b) { let u = users.find(x => x.id === id); u.badge = b; saveDB(); renderAdminList(); }
-    function toggleMaint(id) { let u = users.find(x => x.id === id); u.isMaint = !u.isMaint; saveDB(); renderAdminList(); }
+    function toggleSingleMaint(id) { let u = users.find(x => x.id === id); u.isMaint = !u.isMaint; saveDB(); renderAdminList(); }
     function toggleBan(id) { let u = users.find(x => x.id === id); if(u.id !== me.id) u.banned = !u.banned; saveDB(); renderAdminList(); }
-    function searchByID() {
-        const query = document.getElementById('id-search-input').value.trim();
-        const found = users.find(u => u.id === query);
-        if(found && found.id !== me.id) openChat(found.id);
-    }
-    function contactAdmin() { openChat("123-abc"); }
+    function openAdminPanel() { if(prompt("CLAVE:") === ADMIN_PASS) { 
+        document.getElementById('global-maint-btn').innerText = globalMaint ? "QUITAR MANT. GLOBAL" : "MANTENIMIENTO GLOBAL";
+        renderAdminList(); 
+        document.getElementById('admin-modal').classList.remove('hidden'); 
+    }}
     function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
-    function logout() { me = null; location.reload(); }
+    function logout() { location.reload(); }
+    function searchByID() { const q = document.getElementById('id-search-input').value; const f = users.find(x => x.id === q); if(f && f.id !== me.id) openChat(f.id); }
+    function openChat(id) {
+        talkingTo = id; const t = users.find(x => x.id === id);
+        document.getElementById('chat-header').classList.remove('hidden');
+        document.getElementById('chat-input-bar').classList.remove('hidden');
+        document.getElementById('target-name').innerText = t.name;
+        document.getElementById('target-id-label').innerText = t.id;
+        document.getElementById('target-badges').innerHTML = getBadgesHTML(t.badges);
+        document.getElementById('target-avatar').innerHTML = `<img src="${t.photo}" class="w-full h-full rounded-full">`;
+        renderMessages();
+    }
     function send() {
-        const i = document.getElementById('msg-input');
-        if(!i.value.trim()) return;
+        const i = document.getElementById('msg-input'); if(!i.value.trim()) return;
         messages.push({ from: me.id, to: talkingTo, text: i.value.trim() });
         i.value = ""; saveDB(); renderMessages(); renderHistory();
     }
+    function renderMessages() {
+      const flow = document.getElementById('messages-flow');
+      const conv = messages.filter(m => (m.from === me.id && m.to === talkingTo) || (m.from === talkingTo && m.to === me.id));
+      flow.innerHTML = conv.map(m => `<div class="flex flex-col ${m.from === me.id ? 'items-end' : 'items-start'}"><div class="p-3 max-w-[75%] ${m.from === me.id ? 'bubble-out' : 'bubble-in'} text-sm">${m.text}</div></div>`).join('');
+      flow.scrollTop = flow.scrollHeight;
+    }
+    function renderHistory() {
+      const list = document.getElementById('chats-list');
+      const contacts = [...new Set(messages.filter(m => m.to === me.id || m.from === me.id).map(m => m.from === me.id ? m.to : m.from))];
+      list.innerHTML = contacts.map(cid => {
+          const u = users.find(x => x.id === cid); if(!u) return '';
+          return `<div onclick="openChat('${u.id}')" class="p-4 flex items-center gap-4 hover:bg-[#202c33] cursor-pointer border-b border-white/5"><img src="${u.photo}" class="w-10 h-10 rounded-full"><div><p class="text-white text-sm font-bold flex items-center gap-1">${u.name} ${getBadgesHTML(u.badges)}</p></div></div>`;
+      }).join('');
+    }
+    function contactAdmin() { openChat("123-abc"); }
+    function clearChat() { if(confirm("¿Borrar?")) { messages = messages.filter(m => !((m.from === me.id && m.to === talkingTo) || (m.from === talkingTo && m.to === me.id))); saveDB(); renderMessages(); renderHistory(); }}
   </script>
 </body>
