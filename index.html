@@ -8,27 +8,27 @@
   }
   .bubble-in { background-color: #202c33; border-radius: 0 15px 15px 15px; align-self: flex-start; }
   .bubble-out { background-color: #005c4b; border-radius: 15px 0 15px 15px; align-self: flex-end; }
-  .v-blue { background: #3b82f6; }
-  .v-gold { background: #facc15; }
+  
+  /* COLORES DE VERIFICADOS */
+  .v-gold { color: #facc15; filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.5)); }
+  .v-blue { color: #3b82f6; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.5)); }
+  .v-green { color: #22c55e; filter: drop-shadow(0 0 5px rgba(34, 197, 94, 0.5)); }
+  
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
-  .note-bg { background: #2a3942; border-left: 4px solid #facc15; }
 </style>
 
 <body class="bg-[#111b21] font-sans text-slate-200 overflow-hidden">
   
   <div id="maint-screen" class="hidden fixed inset-0 bg-black z-[5000] flex flex-col items-center justify-center text-center p-6">
-      <div class="w-32 h-32 mb-6 text-yellow-500 animate-bounce">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-      </div>
       <h1 class="text-4xl font-black text-white mb-4 uppercase italic">Servidor en Mantenimiento</h1>
-      <p class="text-slate-400 max-w-md">Estamos realizando mejoras técnicas. Por favor, vuelve a intentar acceder en unos minutos.</p>
+      <p class="text-slate-400">Vuelve más tarde.</p>
   </div>
 
   <div id="app">
     <div id="login-screen" class="h-screen flex flex-col items-center justify-center bg-[#111b21]">
       <div class="text-center mb-10">
-          <div class="w-24 h-24 bg-[#00a884] rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-[0_0_40px_rgba(0,168,132,0.3)]">
+          <div class="w-24 h-24 bg-[#00a884] rounded-3xl flex items-center justify-center mx-auto mb-4">
               <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
           </div>
           <h1 class="text-4xl font-black text-white tracking-widest uppercase italic">ZenMail</h1>
@@ -36,7 +36,7 @@
       <div class="bg-[#222e35] p-8 rounded-2xl w-[380px] shadow-2xl border-t-4 border-[#00a884]">
         <input type="text" id="login-user" placeholder="Tu nombre" class="w-full p-4 bg-[#2a3942] rounded-xl outline-none mb-4 text-white">
         <input type="password" id="login-pass" placeholder="Contraseña" class="w-full p-4 bg-[#2a3942] rounded-xl outline-none mb-6 text-white">
-        <button onclick="auth()" class="w-full bg-[#00a884] py-4 rounded-xl font-black text-[#111b21] hover:bg-[#06cf9c] uppercase tracking-widest">Entrar</button>
+        <button onclick="auth()" class="w-full bg-[#00a884] py-4 rounded-xl font-black text-[#111b21] uppercase tracking-widest hover:bg-[#06cf9c]">Entrar</button>
       </div>
     </div>
 
@@ -44,16 +44,16 @@
       <aside class="w-[400px] border-r border-white/5 flex flex-col bg-[#111b21]">
         <header class="p-4 bg-[#202c33] flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <img id="my-avatar" onclick="openAdminPanel()" class="w-10 h-10 rounded-full cursor-pointer object-cover border border-white/10">
+                <img id="my-avatar" onclick="openAdminPanel()" class="w-10 h-10 rounded-full cursor-pointer object-cover">
                 <div>
-                    <p id="my-name-display" class="text-xs font-bold text-white"></p>
-                    <p id="my-id-display" onclick="copyMyID()" class="text-[10px] text-[#00a884] font-black cursor-pointer hover:underline"></p>
+                    <div class="flex items-center gap-1">
+                        <p id="my-name-display" class="text-xs font-bold text-white"></p>
+                        <span id="my-badge-display"></span>
+                    </div>
+                    <p id="my-id-display" onclick="copyMyID()" class="text-[10px] text-[#00a884] font-black cursor-pointer"></p>
                 </div>
             </div>
-            <div class="flex gap-3">
-                <button onclick="openNotes()" class="text-yellow-500 text-xl">📝</button>
-                <button onclick="logout()" class="text-slate-400">❌</button>
-            </div>
+            <button onclick="logout()" class="text-slate-400">❌</button>
         </header>
 
         <div class="p-4 space-y-3">
@@ -61,7 +61,7 @@
                 <input type="text" id="id-search-input" placeholder="Buscar ID..." class="flex-1 p-2.5 bg-[#202c33] rounded-lg text-xs outline-none text-white border border-white/10 focus:border-[#00a884]">
                 <button onclick="searchByID()" class="bg-[#00a884] px-4 rounded-lg text-xs font-bold text-[#111b21]">BUSCAR</button>
             </div>
-            <button onclick="contactAdmin()" class="w-full bg-[#3b82f6]/20 border border-[#3b82f6] text-[#3b82f6] py-2 rounded-lg text-[10px] font-black uppercase tracking-widest">📞 Contactar Admin (123-abc)</button>
+            <button onclick="contactAdmin()" class="w-full bg-[#3b82f6]/20 border border-[#3b82f6] text-[#3b82f6] py-2 rounded-lg text-[10px] font-black uppercase">📞 Contactar Admin (123-abc)</button>
             <div id="id-result-container"></div>
         </div>
         <div id="chats-list" class="flex-1 overflow-y-auto border-t border-white/5"></div>
@@ -72,90 +72,79 @@
             <div class="flex items-center gap-4">
                 <div id="target-avatar" class="w-10 h-10 rounded-full"></div>
                 <div class="flex flex-col">
-                    <span id="target-name" class="font-bold text-white text-sm"></span>
+                    <div class="flex items-center gap-1">
+                        <span id="target-name" class="font-bold text-white text-sm"></span>
+                        <span id="target-badge"></span>
+                    </div>
                     <span id="target-id-label" class="text-[9px] text-slate-400 font-bold uppercase tracking-widest"></span>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <button onclick="startCall()" class="text-[#00a884]">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"></path></svg>
-                </button>
-                <button onclick="clearChat()" class="text-red-500 text-[10px] font-black border border-red-500 px-2 py-1 rounded">BORRAR CHAT</button>
-            </div>
+            <button onclick="clearChat()" class="text-red-500 text-[10px] font-black border border-red-500 px-2 py-1 rounded">BORRAR CHAT</button>
         </header>
         <div id="messages-flow" class="flex-1 p-8 overflow-y-auto flex flex-col gap-4"></div>
         <div id="chat-input-bar" class="hidden p-4 bg-[#202c33] flex items-center gap-4 border-l border-white/5">
-            <input type="text" id="msg-input" placeholder="Escribe un mensaje..." class="flex-1 p-3 bg-[#2a3942] rounded-xl outline-none text-white text-sm">
+            <input type="text" id="msg-input" placeholder="Mensaje..." class="flex-1 p-3 bg-[#2a3942] rounded-xl outline-none text-white text-sm">
             <button onclick="send()" class="text-[#00a884] font-black px-4">ENVIAR</button>
         </div>
       </main>
     </div>
 
     <div id="admin-modal" class="hidden fixed inset-0 bg-black/90 z-[1000] flex items-center justify-center p-6">
-      <div class="bg-[#111b21] border border-[#00a884]/30 rounded-3xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
+      <div class="bg-[#111b21] border border-[#00a884]/30 rounded-3xl w-full max-w-4xl h-[80vh] flex flex-col">
         <header class="p-5 bg-[#202c33] flex justify-between items-center">
-          <h2 class="font-black text-[#00a884] uppercase">Panel de Control Maestro</h2>
+          <h2 class="font-black text-[#00a884] uppercase">Control Maestro</h2>
           <button onclick="closeAdmin()" class="bg-red-600 px-4 py-1 rounded text-xs text-white">CERRAR</button>
         </header>
         <div id="admin-list-container" class="flex-1 p-6 overflow-y-auto space-y-4"></div>
       </div>
     </div>
-
   </div>
 
   <script>
     const ADMIN_PASS = "ZM_X99_ROOT_#SECURITY_2026";
     let users = JSON.parse(localStorage.getItem('za_id_users')) || [
-        { id: "123-abc", name: "Admin ZenMail", pass: "root", banned: false, isMaint: false, photo: "https://ui-avatars.com/api/?name=Admin&background=00a884&color=fff" }
+        { id: "123-abc", name: "Admin ZenMail", pass: "root", banned: false, isMaint: false, badge: "gold", photo: "https://ui-avatars.com/api/?name=Admin&background=00a884&color=fff" }
     ];
     let messages = JSON.parse(localStorage.getItem('za_id_messages')) || [];
     let me = null;
     let talkingTo = null;
-    let lastMsgCount = 0;
+
+    const BADGES = {
+        gold: '<svg class="w-3.5 h-3.5 v-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.64.304 1.24.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>',
+        blue: '<svg class="w-3.5 h-3.5 v-blue" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293l-4 4a1 1 0 01-1.414 0l-2-2a1 1 0 111.414-1.414L9 10.586l3.293-3.293a1 1 0 111.414 1.414z"></path></svg>',
+        green: '<svg class="w-3.5 h-3.5 v-green" fill="currentColor" viewBox="0 0 20 20"><path d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"></path></svg>'
+    };
 
     function saveDB() {
       localStorage.setItem('za_id_users', JSON.stringify(users));
       localStorage.setItem('za_id_messages', JSON.stringify(messages));
     }
 
-    // REAL TIME SYNC (SIN ACTUALIZAR)
+    // SINCRONIZACIÓN EN TIEMPO REAL
     setInterval(() => {
-        // Cargar datos nuevos
         users = JSON.parse(localStorage.getItem('za_id_users')) || users;
         messages = JSON.parse(localStorage.getItem('za_id_messages')) || messages;
-
         if(me) {
-            // Revisar Mantenimiento
-            let myStatus = users.find(u => u.id === me.id);
-            if(myStatus && myStatus.isMaint) {
-                document.getElementById('maint-screen').classList.remove('hidden');
-            } else {
-                document.getElementById('maint-screen').classList.add('hidden');
+            let userState = users.find(u => u.id === me.id);
+            if(userState) {
+                if(userState.isMaint) document.getElementById('maint-screen').classList.remove('hidden');
+                else document.getElementById('maint-screen').classList.add('hidden');
+                document.getElementById('my-badge-display').innerHTML = BADGES[userState.badge] || '';
             }
-
-            // Revisar si hay mensajes nuevos en el chat abierto
-            if(talkingTo) {
-                let currentConv = messages.filter(m => (m.from === me.id && m.to === talkingTo) || (m.from === talkingTo && m.to === me.id));
-                if(currentConv.length !== lastMsgCount) {
-                    renderMessages();
-                    lastMsgCount = currentConv.length;
-                    renderHistory();
-                }
-            }
+            if(talkingTo) renderMessages();
         }
     }, 1000);
 
     function auth() {
       const uName = document.getElementById('login-user').value.trim();
       const uPass = document.getElementById('login-pass').value.trim();
-      if(!uName || !uPass) return;
       let user = users.find(x => x.name.toLowerCase() === uName.toLowerCase() && x.pass === uPass);
       if(user) {
-        if(user.banned) return alert("BANEADO");
+        if(user.banned) return alert("BAN");
         me = user;
       } else {
         const newID = "ZEN-" + Math.floor(1000 + Math.random() * 9000);
-        me = { id: newID, name: uName, pass: uPass, banned: false, isMaint: false, photo: `https://ui-avatars.com/api/?name=${uName}&background=random` };
+        me = { id: newID, name: uName, pass: uPass, banned: false, isMaint: false, badge: 'none', photo: `https://ui-avatars.com/api/?name=${uName}&background=random` };
         users.push(me);
         saveDB();
       }
@@ -171,33 +160,6 @@
       renderHistory();
     }
 
-    function send() {
-      const input = document.getElementById('msg-input');
-      if(!input.value.trim() || !talkingTo) return;
-      messages.push({ from: me.id, to: talkingTo, text: input.value.trim() });
-      input.value = "";
-      saveDB();
-      renderMessages();
-      renderHistory();
-    }
-
-    function renderMessages() {
-      const flow = document.getElementById('messages-flow');
-      const conv = messages.filter(m => (m.from === me.id && m.to === talkingTo) || (m.from === talkingTo && m.to === me.id));
-      flow.innerHTML = conv.map(m => `<div class="flex flex-col ${m.from === me.id ? 'items-end' : 'items-start'} animate-fade-in"><div class="p-3 max-w-[75%] ${m.from === me.id ? 'bubble-out' : 'bubble-in'}"><p class="text-sm text-white">${m.text}</p></div></div>`).join('');
-      flow.scrollTop = flow.scrollHeight;
-    }
-
-    function renderHistory() {
-      const list = document.getElementById('chats-list');
-      const contacts = [...new Set(messages.filter(m => m.to === me.id || m.from === me.id).map(m => m.from === me.id ? m.to : m.from))];
-      list.innerHTML = contacts.map(cid => {
-        const u = users.find(x => x.id === cid);
-        if(!u) return '';
-        return `<div onclick="openChat('${u.id}')" class="p-4 flex items-center gap-4 hover:bg-[#202c33] cursor-pointer border-b border-white/5"><img src="${u.photo}" class="w-10 h-10 rounded-full"><div><p class="text-white text-sm font-bold">${u.name}</p><p class="text-[10px] text-slate-500">${u.id}</p></div></div>`;
-      }).join('');
-    }
-
     function openChat(id) {
         talkingTo = id;
         const target = users.find(x => x.id === id);
@@ -205,12 +167,30 @@
         document.getElementById('chat-input-bar').classList.remove('hidden');
         document.getElementById('target-name').innerText = target.name;
         document.getElementById('target-id-label').innerText = target.id;
+        document.getElementById('target-badge').innerHTML = BADGES[target.badge] || '';
         document.getElementById('target-avatar').innerHTML = `<img src="${target.photo}" class="w-full h-full rounded-full">`;
         renderMessages();
     }
 
+    function renderMessages() {
+      const flow = document.getElementById('messages-flow');
+      const conv = messages.filter(m => (m.from === me.id && m.to === talkingTo) || (m.from === talkingTo && m.to === me.id));
+      flow.innerHTML = conv.map(m => `<div class="flex flex-col ${m.from === me.id ? 'items-end' : 'items-start'}"><div class="p-3 max-w-[75%] ${m.from === me.id ? 'bubble-out' : 'bubble-in'}"><p class="text-sm text-white">${m.text}</p></div></div>`).join('');
+      flow.scrollTop = flow.scrollHeight;
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('chats-list');
+      const contacts = [...new Set(messages.filter(m => m.to === me.id || m.from === me.id).map(m => m.from === me.id ? m.to : m.from))];
+      list.innerHTML = contacts.map(cid => {
+          const u = users.find(x => x.id === cid);
+          if(!u) return '';
+          return `<div onclick="openChat('${u.id}')" class="p-4 flex items-center gap-4 hover:bg-[#202c33] cursor-pointer border-b border-white/5"><img src="${u.photo}" class="w-10 h-10 rounded-full"><div><p class="text-white text-sm font-bold flex items-center gap-1">${u.name} ${BADGES[u.badge] || ''}</p></div></div>`;
+      }).join('');
+    }
+
     function openAdminPanel() {
-      if(prompt("PASSWORD MAESTRA:") === ADMIN_PASS) { renderAdminList(); document.getElementById('admin-modal').classList.remove('hidden'); }
+      if(prompt("PASSWORD:") === ADMIN_PASS) { renderAdminList(); document.getElementById('admin-modal').classList.remove('hidden'); }
     }
 
     function renderAdminList() {
@@ -219,22 +199,41 @@
             <div class="flex items-center gap-4">
                 <img src="${u.photo}" class="w-12 h-12 rounded-full">
                 <div>
-                    <p class="text-white text-sm font-black">${u.name} ${u.isMaint ? '⚠️' : ''}</p>
+                    <p class="text-white text-sm font-black">${u.name} (Clave: ${u.pass})</p>
                     <p class="text-[#00a884] text-[10px]">ID: ${u.id}</p>
-                    <p class="text-yellow-500 text-[10px] font-bold uppercase">Clave: ${u.pass}</p>
+                    <div class="mt-2 flex gap-1">
+                        <select onchange="setBadge('${u.id}', this.value)" class="bg-black text-[9px] text-white p-1 rounded border border-white/20">
+                            <option value="none" ${u.badge==='none'?'selected':''}>Sin Verificado</option>
+                            <option value="gold" ${u.badge==='gold'?'selected':''}>Dorado (Admin)</option>
+                            <option value="blue" ${u.badge==='blue'?'selected':''}>Azul (Famoso)</option>
+                            <option value="green" ${u.badge==='green'?'selected':''}>Verde (VIP)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="toggleMaint('${u.id}')" class="bg-red-500 px-3 py-1 rounded text-[10px] text-white font-bold uppercase">${u.isMaint ? 'QUITAR MANT.' : 'MANTENIMIENTO'}</button>
-                <button onclick="toggleBan('${u.id}')" class="bg-orange-600 px-3 py-1 rounded text-[10px] text-white font-bold">BANEAR</button>
+                <button onclick="toggleMaint('${u.id}')" class="bg-red-500 px-3 py-1 rounded text-[9px] text-white font-bold">${u.isMaint ? 'QUITAR MANT.' : 'MANT.'}</button>
+                <button onclick="toggleBan('${u.id}')" class="bg-orange-600 px-3 py-1 rounded text-[9px] text-white font-bold">BANEAR</button>
             </div>
         </div>`).join('');
     }
 
-    function toggleMaint(id) { let u = users.find(x => x.id === id); if(u.id === "123-abc") return; u.isMaint = !u.isMaint; saveDB(); renderAdminList(); }
-    function toggleBan(id) { let u = users.find(x => x.id === id); if(u.id === me.id) return; u.banned = !u.banned; saveDB(); renderAdminList(); }
-    function contactAdmin() { if(me.id !== "123-abc") openChat("123-abc"); }
+    function setBadge(id, b) { let u = users.find(x => x.id === id); u.badge = b; saveDB(); renderAdminList(); }
+    function toggleMaint(id) { let u = users.find(x => x.id === id); u.isMaint = !u.isMaint; saveDB(); renderAdminList(); }
+    function toggleBan(id) { let u = users.find(x => x.id === id); if(u.id !== me.id) u.banned = !u.banned; saveDB(); renderAdminList(); }
+    function searchByID() {
+        const query = document.getElementById('id-search-input').value.trim();
+        const found = users.find(u => u.id === query);
+        if(found && found.id !== me.id) openChat(found.id);
+    }
+    function contactAdmin() { openChat("123-abc"); }
     function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
     function logout() { me = null; location.reload(); }
+    function send() {
+        const i = document.getElementById('msg-input');
+        if(!i.value.trim()) return;
+        messages.push({ from: me.id, to: talkingTo, text: i.value.trim() });
+        i.value = ""; saveDB(); renderMessages(); renderHistory();
+    }
   </script>
 </body>
